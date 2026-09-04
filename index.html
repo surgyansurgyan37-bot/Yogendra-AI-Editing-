@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yogendra AI Editing</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="brand">🎬 Yogendra AI Editing</div>
+  <div class="tag">Photo → Animation → Voice → YouTube</div>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>अपनी फोटो से YouTube वीडियो बनाइए</h1>
+    <p>फोटो अपलोड करें, स्क्रिप्ट लिखें और animation + voice preview तैयार करें।</p>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>1. Photo</h2>
+      <label class="upload">
+        <input id="photo" type="file" accept="image/*">
+        <span>📷 फोटो चुनें</span>
+      </label>
+      <div class="preview"><img id="previewImg" alt="Preview"></div>
+    </div>
+
+    <div class="card">
+      <h2>2. Script & Voice</h2>
+      <textarea id="script" placeholder="यहाँ अपनी कहानी/स्क्रिप्ट लिखें..."></textarea>
+      <div class="row">
+        <select id="voice"></select>
+        <select id="ratio">
+          <option value="shorts">YouTube Shorts 9:16</option>
+          <option value="long">YouTube Long 16:9</option>
+        </select>
+      </div>
+      <div class="row">
+        <button id="speak">🔊 Voice सुनें</button>
+        <button id="stop" class="secondary">⏹ Stop</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>3. Animation Preview</h2>
+    <div class="stage-wrap"><canvas id="canvas"></canvas></div>
+    <div class="row">
+      <select id="animation">
+        <option value="zoom">Smooth Zoom</option>
+        <option value="pan">Pan</option>
+        <option value="kenburns">Ken Burns</option>
+        <option value="float">Float</option>
+      </select>
+      <input id="duration" type="number" min="3" max="30" value="8">
+      <button id="preview">▶ Animation चलाएँ</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>4. YouTube Video</h2>
+    <p class="note">यह starter version browser में photo animation और voice preview देता है। असली AI voice और server-side MP4 export जोड़ने के लिए API key/backend जोड़ना होगा।</p>
+    <button id="download" class="primary">⬇️ Animation WebM Export</button>
+    <div id="status"></div>
+  </section>
+</main>
+
+<footer>Yogendra AI Editing • YouTube Creator Tool</footer>
+<script src="app.js"></script>
+</body>
+</html>
