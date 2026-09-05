@@ -2,392 +2,205 @@
 <html lang="hi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Yogendra AI Editing — Video Maker</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Yogendra AI Editing — Photo to Video</title>
+<meta name="description" content="Create short videos from photos with voice, music, animation and export tools.">
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#172033}
-header{background:#111827;color:#fff;padding:18px 16px;text-align:center}
-.brand{font-size:23px;font-weight:800}.tag{margin-top:5px;font-size:14px;opacity:.85}
-main{max-width:820px;margin:auto;padding:16px}
-.card{background:#fff;padding:18px;margin:14px 0;border-radius:18px;box-shadow:0 5px 22px #00000012}
-h1,h2{margin-top:0}label{display:block;margin-top:10px;font-weight:650}
-input,select,textarea,button{width:100%;padding:13px;margin:7px 0;font-size:16px;border-radius:11px}
-input,select,textarea{border:1px solid #d8deea;background:#fff;color:#172033}
-textarea{min-height:190px;resize:vertical}
-button{border:0;background:#111827;color:#fff;font-weight:750;cursor:pointer}
-button:disabled{opacity:.55;cursor:not-allowed}
-.secondary{background:#e9edf5;color:#172033}.green{background:#166534}
-.status{padding:12px;background:#eef2ff;border-radius:11px;margin-top:10px;white-space:pre-wrap}
-.ok{background:#ecfdf3}.error{background:#fef2f2}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.scene{border:1px solid #e1e6ef;border-radius:12px;padding:12px;margin:9px 0}
-.scene b{display:block;margin-bottom:5px}.small{font-size:13px;color:#667085}
-video{width:100%;margin-top:12px;border-radius:12px;background:#000}
-.about{line-height:1.7}
-@media(max-width:600px){.row{grid-template-columns:1fr}}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Noto Sans,sans-serif;background:#f3f6fb;color:#172033}
+header{background:#111827;color:#fff;padding:18px 18px 20px;position:sticky;top:0;z-index:5;box-shadow:0 2px 12px #0002}
+.brand{font-size:25px;font-weight:800}.sub{opacity:.78;font-size:13px;margin-top:4px}
+.wrap{max-width:760px;margin:auto;padding:18px 14px 50px}.card{background:#fff;border-radius:22px;padding:18px;margin:14px 0;box-shadow:0 6px 24px #17203312}
+h2{margin:0 0 12px;font-size:22px}.step{display:flex;gap:10px;align-items:center;margin-bottom:12px}.num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#172033;color:#fff;font-weight:800}
+label{display:block;font-weight:700;margin:12px 0 7px}input,textarea,select{width:100%;border:1px solid #d8dee9;border-radius:14px;padding:13px 14px;font:inherit;background:#fff}textarea{min-height:120px;resize:vertical}
+button{width:100%;border:0;border-radius:14px;padding:14px 16px;font:700 16px inherit;cursor:pointer;margin-top:10px;background:#172033;color:#fff}button.green{background:#18723d}button.light{background:#edf2f8;color:#172033}button.red{background:#b42318}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.drop{border:2px dashed #b8c3d5;border-radius:18px;padding:25px;text-align:center;background:#f8fafc}.drop strong{display:block;font-size:18px;margin-bottom:5px}
+#thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.thumb{aspect-ratio:1;border-radius:12px;overflow:hidden;background:#e9eef5;position:relative}.thumb img{width:100%;height:100%;object-fit:cover}.thumb span{position:absolute;left:5px;bottom:5px;background:#0009;color:#fff;border-radius:8px;padding:2px 6px;font-size:11px}
+.status{padding:12px 14px;border-radius:14px;background:#eef7f0;margin-top:10px}.muted{color:#687386;font-size:14px}.hidden{display:none!important}
+video{width:100%;border-radius:16px;background:#0b0f18;margin-top:10px}audio{width:100%;margin-top:10px}
+.pill{display:inline-block;padding:7px 10px;border-radius:999px;background:#eef2f7;margin:4px 3px;font-size:13px}
+.timeline{display:flex;gap:8px;overflow:auto;padding:6px 0}.tl{min-width:90px;height:60px;border-radius:10px;overflow:hidden;border:2px solid transparent}.tl.active{border-color:#18723d}.tl img{width:100%;height:100%;object-fit:cover}
+footer{text-align:center;color:#718096;font-size:13px;margin-top:20px}
+@media(min-width:650px){#thumbs{grid-template-columns:repeat(5,1fr)}}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">🎬 Yogendra AI Editing</div>
-  <div class="tag">Video Maker • Local Demo Mode</div>
-</header>
+<header><div class="wrap" style="padding:0"><div class="brand">🤖 Yogendra AI Editing</div><div class="sub">Photo → Story → Voice → Animation → Video</div></div></header>
 
-<main>
+<main class="wrap">
 <section class="card">
-<h1>🤖 AI Video Maker</h1>
-<p>अभी API credits के बिना भी website का video workflow टेस्ट करें।</p>
-
-<label>Video Topic</label>
-<input id="topic" value="0 से हीरो कैसे बने">
-
-<div class="row">
-<div><label>Language</label>
-<select id="language"><option>Hindi</option><option>English</option></select></div>
-<div><label>Duration</label>
-<select id="duration"><option value="30">30 सेकंड</option><option value="60" selected>1 मिनट</option><option value="120">2 मिनट</option></select></div>
-</div>
-
-<div class="row">
-<div><label>Format</label>
-<select id="format"><option value="9:16">Shorts 9:16</option><option value="16:9">YouTube 16:9</option></select></div>
-<div><label>Style</label>
-<select id="style"><option>Cinematic</option><option>Education</option><option>Business</option></select></div>
-</div>
-
-<button id="generate">🤖 Generate Script (Demo)</button>
-<div id="status" class="status">Topic लिखकर Generate दबाएँ।</div>
+  <div class="step"><div class="num">1</div><h2>Photos Upload करें</h2></div>
+  <div class="drop">
+    <strong>📸 अपनी photos चुनें</strong>
+    <span class="muted">एक या कई photos • मोबाइल से सीधे</span>
+    <input id="photos" type="file" accept="image/*" multiple style="margin-top:14px">
+  </div>
+  <div id="thumbs"></div>
+  <div id="photoStatus" class="status hidden"></div>
 </section>
 
 <section class="card">
-<h2>💬 AI Chat Assistant</h2>
-<p>Video बनाने के बारे में सवाल पूछें या अपनी script के लिए मदद लें।</p>
-<div id="chatBox" style="height:220px;overflow:auto;border:1px solid #d8deea;border-radius:11px;padding:10px;background:#fafbff">
-  <div class="small">🤖 नमस्ते! मैं Video Maker Assistant हूँ। आप topic, script, scenes या voice के बारे में पूछ सकते हैं।</div>
-</div>
-<div class="row">
+  <div class="step"><div class="num">2</div><h2>Video Settings</h2></div>
+  <label>Video Idea / Topic</label>
+  <input id="topic" value="मेरी कहानी" placeholder="जैसे: मेहनत से सफलता">
+  <div class="row">
+    <div><label>Format</label><select id="format"><option value="vertical">Shorts 9:16</option><option value="landscape">YouTube 16:9</option></select></div>
+    <div><label>Style</label><select id="style"><option>Cinematic</option><option>Motivational</option><option>Business</option><option>Story</option><option>Simple</option></select></div>
+  </div>
+  <label>हर photo का समय</label>
+  <select id="duration"><option value="3">3 सेकंड</option><option value="4" selected>4 सेकंड</option><option value="5">5 सेकंड</option></select>
+</section>
+
+<section class="card">
+  <div class="step"><div class="num">3</div><h2>Script</h2></div>
+  <textarea id="script" placeholder="अपनी script लिखें या नीचे Demo Script बनाएं"></textarea>
+  <button class="light" id="demoScript">✨ Demo Script बनाएं</button>
+  <button class="light" id="speak">🔊 Browser Voice सुनें</button>
+  <p class="muted">यह browser की built-in voice है; OpenAI API credits की जरूरत नहीं।</p>
+</section>
+
+<section class="card">
+  <div class="step"><div class="num">4</div><h2>Voice जोड़ें</h2></div>
+  <button class="green" id="startRec">🔴 अपनी Voice Record करें</button>
+  <button class="light" id="stopRec" disabled>⏹️ Stop Recording</button>
+  <button class="red hidden" id="deleteRec">🗑️ Recording Delete</button>
+  <audio id="voicePreview" controls class="hidden"></audio>
+  <div id="voiceStatus" class="status">Voice optional है। चाहें तो अपनी आवाज़ रिकॉर्ड/अपलोड करें।</div>
+  <label>या Voice file upload करें</label>
+  <input id="voiceFile" type="file" accept="audio/*">
+</section>
+
+<section class="card">
+  <div class="step"><div class="num">5</div><h2>Timeline</h2></div>
+  <div id="timeline" class="timeline"><span class="muted">Photos upload करने पर timeline दिखेगी।</span></div>
+  <button class="green" id="render">🎬 Create Video</button>
+  <div id="renderStatus" class="status hidden"></div>
+</section>
+
+<section class="card">
+  <div class="step"><div class="num">6</div><h2>Final Video</h2></div>
+  <video id="preview" controls playsinline class="hidden"></video>
+  <button id="download" class="green hidden">⬇️ Video Export करें</button>
+  <button id="reset" class="light">🔄 New Project</button>
+  <p class="muted">यह no-API browser renderer है। Export आम तौर पर WebM format में होगा; browser support के अनुसार audio भी जोड़ा जाएगा।</p>
+</section>
+
+<section class="card">
+  <h2>💬 AI Chat Assistant</h2>
+  <p class="muted">Quick help: script, scene, voice या video के बारे में पूछें।</p>
   <input id="chatInput" placeholder="जैसे: मेरी video का intro लिखो">
-  <button id="chatSend" class="green">📨 Send</button>
-</div>
-<div class="small">यह chat अभी Demo/Local mode में है, इसलिए API credits की जरूरत नहीं है।</div>
+  <button id="chatSend">✉️ Send</button>
+  <div id="chatReply" class="status hidden"></div>
 </section>
 
-<section class="card">
-<h2>📖 Script</h2>
-<textarea id="script" placeholder="Script यहाँ आएगी..."></textarea>
-<div class="row">
-<button id="speak">🔊 Browser Voice सुनें</button>
-<button id="scenesBtn" class="secondary">🎬 Generate Scenes</button>
-</div>
-<div class="small">Browser Voice आपके फोन की built-in आवाज़ है; यह OpenAI API credits इस्तेमाल नहीं करती।</div>
-</section>
-
-<section class="card">
-<h2>🎬 Scenes</h2>
-<div id="scenes"><div class="small">Script generate करने के बाद scenes यहाँ दिखाई देंगे।</div></div>
-</section>
-
-<section class="card">
-<h2>🎙️ अपनी Voice जोड़ें</h2>
-<p>API credits के बिना अपनी आवाज़ रिकॉर्ड करके video में जोड़ सकते हैं।</p>
-<div class="row">
-<button id="record" class="green">🔴 Start Voice Recording</button>
-<button id="stopRecord" class="secondary" disabled>⏹️ Stop Recording</button>
-</div>
-<audio id="voicePreview" controls style="display:none"></audio>
-<button id="deleteRecording" class="secondary" style="display:none">🗑️ Delete Recording</button>
-<div id="recordStatus" class="status">पहले अपनी voice record करें।</div>
-</section>
-
-<section class="card">
-<h2>🎥 Final Video</h2>
-<button id="render" class="green">▶️ Render Video With Voice</button>
-<div id="progress" class="status">Voice record करने के बाद video render करें।</div>
-<video id="preview" controls playsinline style="display:none"></video>
-<a id="download" style="display:none;text-decoration:none">
-<button class="green">⬇️ Export Video</button>
-</a>
-<div class="small" style="margin-top:8px">
-यह browser में video + recorded voice को एक WebM file में export करने की कोशिश करता है। API credits की जरूरत नहीं है।
-</div>
-</section>
-
-<section class="card about">
-<h2>ℹ️ About</h2>
-<p><b>Name:</b> Yogendra Singh<br>
-<b>Father:</b> Surgyan Singh (Army)<br>
-<b>Mother:</b> Rekha Devi<br>
-<b>Village:</b> Mitrapura<br>
-<b>District:</b> Dausa<br>
-<b>State:</b> Rajasthan<br>
-<b>Made by Yogendra</b></p>
-</section>
+<footer>Made by Yogendra • AI Video Maker Demo</footer>
 </main>
 
 <script>
 const $=id=>document.getElementById(id);
-let scenes=[], videoBlob=null, currentUrl=null;
+let images=[], voiceBlob=null, recorder=null, chunks=[], audioFile=null, videoURL=null;
 
-function setStatus(msg,type=""){
-  $("status").textContent=msg;
-  $("status").className="status "+type;
-}
-function makeLocalScript(topic, lang, duration){
-  if(lang==="English"){
-    return `Everyone wants to become a hero, but real success starts with small decisions.\\n\\nYour topic is: ${topic}.\\n\\nFirst, set one clear goal. Second, learn something useful every day. Third, keep working even when progress feels slow.\\n\\nDo not wait for everything to be perfect. Start with what you have, improve step by step, and learn from every mistake.\\n\\nRemember: a hero is not someone who never fails. A hero is someone who keeps learning and moving forward.`;
-  }
-  return `हर कोई अपनी जिंदगी में हीरो बनना चाहता है, लेकिन असली बदलाव छोटे-छोटे फैसलों से शुरू होता है।\\n\\nआज का विषय है: ${topic}।\\n\\nसबसे पहले अपना एक साफ लक्ष्य तय कीजिए। दूसरा, हर दिन कुछ उपयोगी सीखिए। तीसरा, शुरुआत छोटी हो तो भी लगातार आगे बढ़ते रहिए।\\n\\nसब कुछ परफेक्ट होने का इंतजार मत कीजिए। आपके पास जो है, उसी से शुरुआत कीजिए और हर गलती से कुछ नया सीखिए।\\n\\nयाद रखिए—हीरो वह नहीं जो कभी असफल न हो। असली हीरो वह है जो सीखता है, दोबारा कोशिश करता है और आगे बढ़ता रहता है।`;
-}
-function splitScenes(text){
-  return text.split(/(?<=[।.!?])\s+|\n+/).map(x=>x.trim()).filter(Boolean).slice(0,8);
-}
-function showScenes(){
-  scenes=splitScenes($("script").value);
-  $("scenes").innerHTML=scenes.map((s,i)=>`<div class="scene"><b>Scene ${i+1}</b>${escapeHtml(s)}</div>`).join("") || '<div class="small">Script खाली है।</div>';
-}
-function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
-
-$("generate").onclick=()=>{
-  const topic=$("topic").value.trim();
-  if(!topic)return setStatus("पहले Topic लिखें।","error");
-  $("script").value=makeLocalScript(topic,$("language").value,$("duration").value);
-  showScenes();
-  setStatus("✅ Demo script तैयार है। API credits की जरूरत नहीं है।","ok");
-};
-$("scenesBtn").onclick=()=>{
-  if(!$("script").value.trim())return setStatus("पहले script बनाइए।","error");
-  showScenes(); setStatus("🎬 Scenes तैयार हैं।","ok");
-};
-$("speak").onclick=()=>{
-  const text=$("script").value.trim();
-  if(!text)return setStatus("पहले script बनाइए।","error");
-  if(!("speechSynthesis" in window))return setStatus("इस browser में Browser Voice उपलब्ध नहीं है।","error");
-  speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang=$("language").value==="Hindi"?"hi-IN":"en-US";
-  u.rate=.95; speechSynthesis.speak(u);
-  setStatus("🔊 Browser Voice चल रही है।","ok");
+$('photos').onchange=e=>{
+  images=[...e.target.files].filter(f=>f.type.startsWith('image/'));
+  $('thumbs').innerHTML=images.map((f,i)=>`<div class="thumb"><img src="${URL.createObjectURL(f)}"><span>${i+1}</span></div>`).join('');
+  $('photoStatus').classList.toggle('hidden',!images.length);
+  $('photoStatus').textContent=images.length?`✅ ${images.length} photo तैयार हैं।`:'';
+  $('timeline').innerHTML=images.map((f,i)=>`<div class="tl"><img src="${URL.createObjectURL(f)}"></div>`).join('');
 };
 
-function drawScene(ctx,w,h,text,index,p){
-  const g=ctx.createLinearGradient(0,0,w,h);
-  g.addColorStop(0,`hsl(${210+index*18},55%,${18+index*3}%)`);
-  g.addColorStop(1,`hsl(${280+index*10},55%,${10+index*2}%)`);
-  ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
-
-  const cx=w*(.2+.6*p), cy=h*(.3+.15*Math.sin(p*Math.PI));
-  ctx.beginPath();ctx.arc(cx,cy,Math.min(w,h)*(.10+.03*p),0,Math.PI*2);
-  ctx.fillStyle="rgba(255,255,255,.13)";ctx.fill();
-
-  ctx.textAlign="center";
-  ctx.fillStyle="#fff";ctx.font=`800 ${Math.max(30,w/26)}px system-ui`;
-  ctx.fillText("YOGENDRA AI EDITING",w/2,h*.14);
-
-  const words=text.split(/\s+/), lines=[]; let line="";
-  ctx.font=`700 ${Math.max(24,w/34)}px system-ui`;
-  for(const word of words){
-    const test=line?line+" "+word:word;
-    if(ctx.measureText(test).width>w*.82 && line){lines.push(line);line=word}else line=test;
-  }
-  if(line)lines.push(line);
-  const lh=Math.max(34,w/30), boxH=lines.length*lh+50, y=h*.70;
-  ctx.fillStyle="rgba(0,0,0,.62)";
-  ctx.fillRect(w*.07,y,w*.86,boxH);
-  ctx.fillStyle="#fff";
-  lines.forEach((l,j)=>ctx.fillText(l,w/2,y+38+j*lh));
-  ctx.textAlign="left";
-}
-
-
-
-function addChat(who,text){
-  const box=$("chatBox");
-  const div=document.createElement("div");
-  div.style.margin="8px 0";
-  div.style.padding="9px";
-  div.style.borderRadius="10px";
-  div.style.background=who==="You"?"#eaf2ff":"#f1f5f9";
-  div.innerHTML=`<b>${who}:</b> ${escapeHtml(text)}`;
-  box.appendChild(div);
-  box.scrollTop=box.scrollHeight;
-}
-function chatReply(q){
-  const x=q.toLowerCase();
-  if(x.includes("intro")||x.includes("शुरू")){
-    return "आपकी video की शुरुआत ऐसे कर सकते हैं: “क्या आप जानते हैं कि छोटी-सी शुरुआत आपकी पूरी जिंदगी बदल सकती है? आज की video में जानिए कैसे।”";
-  }
-  if(x.includes("script")||x.includes("स्क्रिप्ट")){
-    return "Topic ऊपर लिखें और Generate Script दबाएँ। फिर script को अपनी जरूरत के अनुसार edit कर सकते हैं।";
-  }
-  if(x.includes("voice")||x.includes("आवाज")){
-    return "Voice section में Start Voice Recording दबाएँ, बोलें, फिर Stop Recording दबाएँ। जरूरत हो तो Delete Recording से recording हटाकर नई recording करें।";
-  }
-  if(x.includes("scene")||x.includes("सीन")){
-    return "Script के बाद Generate Scenes दबाएँ। हर scene में आपकी कहानी का एक छोटा हिस्सा दिखेगा।";
-  }
-  if(x.includes("video")||x.includes("वीडियो")){
-    return "पहले script और scenes तैयार करें, फिर अपनी voice record करें और Render Video With Voice दबाएँ।";
-  }
-  return "मैं अभी Video Maker के topic, script, scenes, voice और video workflow में मदद कर सकता हूँ।";
-}
-$("chatSend").onclick=()=>{
-  const q=$("chatInput").value.trim();
-  if(!q)return;
-  addChat("You",q);
-  $("chatInput").value="";
-  setTimeout(()=>addChat("Assistant",chatReply(q)),250);
+$('demoScript').onclick=()=>{
+  const t=$('topic').value.trim()||'मेरी कहानी';
+  $('script').value=`${t} की शुरुआत एक छोटे कदम से होती है।\\n\\nहर दिन कुछ नया सीखिए और लगातार कोशिश करते रहिए।\\n\\nगलतियों से सीखिए, हार मत मानिए और अपने लक्ष्य की ओर आगे बढ़ते रहिए।\\n\\nयाद रखिए—छोटी शुरुआत भी बड़े बदलाव की शुरुआत हो सकती है।`;
 };
-$("chatInput").addEventListener("keydown",e=>{
-  if(e.key==="Enter")$("chatSend").click();
-});
 
-let voiceBlob=null, voiceUrl=null, recorder=null, voiceChunks=[], micStream=null;
+$('speak').onclick=()=>{
+  const text=$('script').value.trim();
+  if(!text) return alert('पहले script लिखें।');
+  speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='hi-IN'; u.rate=.95; speechSynthesis.speak(u);
+};
 
-$("record").onclick=async()=>{
+$('startRec').onclick=async()=>{
   try{
-    micStream=await navigator.mediaDevices.getUserMedia({audio:true});
-    voiceChunks=[];
-    recorder=new MediaRecorder(micStream);
-    recorder.ondataavailable=e=>{if(e.data.size)voiceChunks.push(e.data)};
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    recorder=new MediaRecorder(stream); chunks=[];
+    recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
     recorder.onstop=()=>{
-      voiceBlob=new Blob(voiceChunks,{type:"audio/webm"});
-      if(voiceUrl)URL.revokeObjectURL(voiceUrl);
-      voiceUrl=URL.createObjectURL(voiceBlob);
-      $("voicePreview").src=voiceUrl;
-      $("voicePreview").style.display="block";
-      $("deleteRecording").style.display="block";
-      $("recordStatus").textContent="✅ Voice record हो गई। अब Render Video With Voice दबाएँ।";
-      $("recordStatus").className="status ok";
-      micStream.getTracks().forEach(t=>t.stop());
+      stream.getTracks().forEach(t=>t.stop());
+      voiceBlob=new Blob(chunks,{type:recorder.mimeType||'audio/webm'});
+      $('voicePreview').src=URL.createObjectURL(voiceBlob);
+      $('voicePreview').classList.remove('hidden'); $('deleteRec').classList.remove('hidden');
+      $('voiceStatus').textContent='✅ Voice record हो गई।';
     };
-    recorder.start();
-    $("record").disabled=true;
-    $("stopRecord").disabled=false;
-    $("recordStatus").textContent="🔴 Recording चल रही है… बोलते रहें।";
-    $("recordStatus").className="status";
-  }catch(e){
-    $("recordStatus").textContent="❌ Microphone permission नहीं मिली। Browser में microphone Allow करें।";
-    $("recordStatus").className="status error";
-  }
+    recorder.start(); $('startRec').disabled=true; $('stopRec').disabled=false; $('voiceStatus').textContent='🔴 Recording चल रही है…';
+  }catch(e){alert('Microphone permission allow करें।')}
 };
-
-$("stopRecord").onclick=()=>{
-  if(recorder && recorder.state!=="inactive") recorder.stop();
-  $("record").disabled=false;
-  $("stopRecord").disabled=true;
+$('stopRec').onclick=()=>{if(recorder&&recorder.state!=='inactive'){recorder.stop();$('startRec').disabled=false;$('stopRec').disabled=true}};
+$('deleteRec').onclick=()=>{
+  voiceBlob=null;$('voicePreview').pause();$('voicePreview').removeAttribute('src');$('voicePreview').classList.add('hidden');$('deleteRec').classList.add('hidden');$('voiceStatus').textContent='Voice recording हट गई।';
 };
+$('voiceFile').onchange=e=>{audioFile=e.target.files[0]||null;if(audioFile){$('voiceStatus').textContent='✅ Voice file चुनी गई: '+audioFile.name}};
 
-$("deleteRecording").onclick=()=>{
-  if(recorder && recorder.state!=="inactive") recorder.stop();
-  if(micStream) micStream.getTracks().forEach(t=>t.stop());
-  if(voiceUrl) URL.revokeObjectURL(voiceUrl);
-  voiceBlob=null; voiceUrl=null; recorder=null; voiceChunks=[];
-  $("voicePreview").pause();
-  $("voicePreview").removeAttribute("src");
-  $("voicePreview").load();
-  $("voicePreview").style.display="none";
-  $("deleteRecording").style.display="none";
-  $("record").disabled=false;
-  $("stopRecord").disabled=true;
-  $("recordStatus").textContent="🗑️ Recording delete हो गई। अब नई voice record कर सकते हैं।";
-  $("recordStatus").className="status ok";
-};
-
-async function renderVideo(){
-  if(!scenes.length)showScenes();
-  if(!scenes.length)return;
-  if(!voiceBlob){
-    $("progress").textContent="❌ पहले अपनी voice record करें।";
-    $("progress").className="status error";
-    return;
-  }
-
-  $("render").disabled=true;
-  $("download").style.display="none";
-  $("preview").style.display="none";
-  $("progress").textContent="⏳ Video + voice render हो रहा है…";
-
-  const canvas=document.createElement("canvas");
-  if($("format").value==="9:16"){canvas.width=720;canvas.height=1280}
-  else{canvas.width=1280;canvas.height=720}
-  const ctx=canvas.getContext("2d");
-  const videoStream=canvas.captureStream(30);
-
-  // Put the recorded voice into an <audio> element and capture its audio stream.
-  const audioEl=document.createElement("audio");
-  audioEl.src=voiceUrl;
-  audioEl.preload="auto";
-  audioEl.playsInline=true;
-  document.body.appendChild(audioEl);
-
-  let audioStream=null;
-  if(typeof audioEl.captureStream==="function"){
-    audioStream=audioEl.captureStream();
-  }else if(typeof audioEl.mozCaptureStream==="function"){
-    audioStream=audioEl.mozCaptureStream();
-  }
-
-  if(!audioStream || !audioStream.getAudioTracks().length){
-    document.body.removeChild(audioEl);
-    $("progress").textContent="❌ इस browser में recorded voice को video में जोड़ना उपलब्ध नहीं है। Voice Preview फिर भी चल सकती है।";
-    $("progress").className="status error";
-    $("render").disabled=false;
-    return;
-  }
-
-  const combined=new MediaStream([
-    ...videoStream.getVideoTracks(),
-    ...audioStream.getAudioTracks()
-  ]);
-  const mime=MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus")
-    ?"video/webm;codecs=vp9,opus"
-    :MediaRecorder.isTypeSupported("video/webm;codecs=vp8,opus")
-    ?"video/webm;codecs=vp8,opus"
-    :"video/webm";
-
-  const rec=new MediaRecorder(combined,{mimeType:mime,videoBitsPerSecond:3500000});
-  const chunks=[];
-  rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
-  const stopped=new Promise(resolve=>rec.onstop=()=>resolve(new Blob(chunks,{type:"video/webm"})));
-
-  const audioDuration=Number.isFinite(audioEl.duration) && audioEl.duration>0
-    ?audioEl.duration:Number($("duration").value);
-  const total=Math.max(2,Math.min(Number($("duration").value),audioDuration));
-  const per=total/scenes.length;
-
-  try{await audioEl.play()}catch(e){}
-  rec.start(200);
-
-  for(let i=0;i<scenes.length;i++){
-    const sceneStart=performance.now();
-    while((performance.now()-sceneStart)/1000<per){
-      const p=Math.min(1,(performance.now()-sceneStart)/(per*1000));
-      drawScene(ctx,canvas.width,canvas.height,scenes[i],i,p);
-      $("progress").textContent=`⏳ Rendering… ${Math.round(((i+p)/scenes.length)*100)}%`;
-      await new Promise(requestAnimationFrame);
-    }
-  }
-
-  rec.stop();
-  const blob=await stopped;
-  try{audioEl.pause()}catch(e){}
-  document.body.removeChild(audioEl);
-
-  if(currentUrl)URL.revokeObjectURL(currentUrl);
-  currentUrl=URL.createObjectURL(blob);
-  $("preview").src=currentUrl;
-  $("preview").style.display="block";
-  $("download").href=currentUrl;
-  $("download").download="yogendra-ai-video-with-voice.webm";
-  $("download").style.display="block";
-  $("progress").textContent="🎉 Video + voice तैयार है। नीचे Export Video दबाएँ।";
-  $("progress").className="status ok";
-  $("render").disabled=false;
+function loadImage(file){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=rej;im.src=URL.createObjectURL(file)})}
+function fitImage(ctx,im,W,H,scale=1){
+  const r=Math.max(W/im.width,H/im.height)*scale,w=im.width*r,h=im.height*r;
+  ctx.drawImage(im,(W-w)/2,(H-h)/2,w,h);
 }
-$("render").onclick=renderVideo;
+$('render').onclick=async()=>{
+  if(!images.length){alert('पहले कम से कम 1 photo upload करें।');return}
+  $('render').disabled=true;$('renderStatus').classList.remove('hidden');$('renderStatus').textContent='⏳ Video बन रहा है…';
+  const vertical=$('format').value==='vertical', W=vertical?720:1280,H=vertical?1280:720;
+  const sec=Number($('duration').value), canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;
+  const ctx=canvas.getContext('2d'); const stream=canvas.captureStream(30);
+  // Best-effort audio: MediaRecorder can include an uploaded/recorded audio stream where supported.
+  let audioCtx=null, dest=null, audioEl=null;
+  const selectedAudio=voiceBlob||audioFile;
+  if(selectedAudio){
+    try{
+      audioCtx=new AudioContext(); dest=audioCtx.createMediaStreamDestination();
+      audioEl=new Audio(); audioEl.src=URL.createObjectURL(selectedAudio); audioEl.crossOrigin='anonymous';
+      const src=audioCtx.createMediaElementSource(audioEl); src.connect(dest); src.connect(audioCtx.destination);
+      dest.stream.getAudioTracks().forEach(t=>stream.addTrack(t));
+    }catch(e){}
+  }
+  const mime=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(MediaRecorder.isTypeSupported)||'video/webm';
+  const mr=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:5000000});let out=[];
+  mr.ondataavailable=e=>{if(e.data.size)out.push(e.data)};
+  const imgs=[];for(const f of images)imgs.push(await loadImage(f));
+  if(audioEl){try{await audioEl.play()}catch(e){}}
+  mr.start();
+  const total=imgs.length*sec*1000,start=performance.now();
+  function frame(now){
+    const elapsed=now-start;if(elapsed>=total){mr.stop();return}
+    const idx=Math.min(imgs.length-1,Math.floor(elapsed/(sec*1000)));const local=(elapsed%(sec*1000))/(sec*1000);
+    ctx.fillStyle='#101522';ctx.fillRect(0,0,W,H);
+    const zoom=1.02+local*.06;
+    fitImage(ctx,imgs[idx],W,H,zoom);
+    const grad=ctx.createLinearGradient(0,H*.7,0,H);grad.addColorStop(0,'transparent');grad.addColorStop(1,'rgba(0,0,0,.72)');ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#fff';ctx.font=`700 ${vertical?34:42}px system-ui`;ctx.textAlign='center';
+    const title=$('topic').value.trim(); if(title)ctx.fillText(title,W/2,H-(vertical?105:75));
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  mr.onstop=()=>{
+    if(audioEl)audioEl.pause(); if(audioCtx)audioCtx.close();
+    const blob=new Blob(out,{type:mime.split(';')[0]});videoURL=URL.createObjectURL(blob);
+    $('preview').src=videoURL;$('preview').classList.remove('hidden');$('download').classList.remove('hidden');
+    $('download').onclick=()=>{const a=document.createElement('a');a.href=videoURL;a.download='yogendra-ai-video.webm';a.click()};
+    $('renderStatus').textContent=`✅ Video तैयार है — ${Math.round(blob.size/1024)} KB`;
+    $('render').disabled=false;
+  };
+};
 
-$("generate").click();
+$('chatSend').onclick=()=>{
+  const q=$('chatInput').value.toLowerCase().trim();let r='मैं आपकी video बनाने में मदद कर सकता हूँ।';
+  if(q.includes('script')||q.includes('intro'))r='📝 Script के लिए topic बताइए। फिर Demo Script बनाकर उसे edit कर सकते हैं।';
+  else if(q.includes('voice'))r='🎙️ Voice section में अपनी आवाज़ record करें या audio file upload करें।';
+  else if(q.includes('photo'))r='📸 ऊपर Photos Upload में एक या कई photos चुनें।';
+  else if(q.includes('scene'))r='🎬 हर photo को एक scene की तरह timeline में रखा जाएगा।';
+  else if(q.includes('video'))r='🎥 Photos + animation के बाद Create Video दबाएँ और नीचे Preview से video देखें।';
+  $('chatReply').textContent=r;$('chatReply').classList.remove('hidden');
+};
+
+$('reset').onclick=()=>location.reload();
 </script>
 </body>
 </html>

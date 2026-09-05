@@ -1,12 +1,13 @@
-# Yogendra AI Editing Backend
+# Yogendra AI Editing — Professional Photo-to-Video
 
-Vercel serverless API:
-- POST /api/script
-- POST /api/voice
-- POST /api/image
-- GET /api/health
+Workflow:
+Photo Upload → Settings → Script → Voice → Timeline → Create Video → Preview → Export
 
-Set OPENAI_API_KEY in Vercel Project Settings -> Environment Variables.
-Never put the key in browser JavaScript or commit it to GitHub.
+This version is designed to work without OpenAI API credits for the browser-based workflow.
+Real cloud AI script/image/voice generation still requires an AI API/service and should use server-side environment variables, never a client-side secret.
 
-This backend generates scene JSON, speech audio, and AI images. Final MP4 assembly can be added as a separate render service; Vercel serverless functions are not intended to be a full video-rendering workstation.
+GitHub/Vercel:
+1. Open your existing repository.
+2. Replace the root `index.html` with this file.
+3. Commit to `main`.
+4. Vercel should deploy the new commit.
