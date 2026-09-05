@@ -75,7 +75,14 @@ footer{text-align:center;color:#718096;font-size:13px;margin-top:20px}
 </section>
 
 <section class="card">
-  <div class="step"><div class="num">6</div><h2>Voice जोड़ें</h2></div>
+  <div class="step"><div class="num">6</div><h2>🎙️ Voice Type</h2></div>
+  <label>20 Voice Styles</label>
+  <select id="voiceType"><option value="1">1. Hindi Natural</option><option value="2">2. Hindi Deep</option><option value="3">3. Hindi Energetic</option><option value="4">4. Hindi Calm</option><option value="5">5. Hindi Story</option><option value="6">6. Hindi Motivational</option><option value="7">7. Hindi News</option><option value="8">8. Hindi Soft</option><option value="9">9. Hindi Fast</option><option value="10">10. Hindi Slow</option><option value="11">11. English Natural</option><option value="12">12. English Deep</option><option value="13">13. English Energetic</option><option value="14">14. English Calm</option><option value="15">15. English Story</option><option value="16">16. English Motivational</option><option value="17">17. English News</option><option value="18">18. English Soft</option><option value="19">19. English Fast</option><option value="20">20. English Slow</option></select>
+  <button class="light" id="testVoice">🔊 चुनी हुई Voice सुनें</button>
+  <div id="voiceTypeInfo" class="status">20 voice styles उपलब्ध हैं।</div>
+</section>
+<section class="card">
+  <div class="step"><div class="num">7</div><h2>Voice जोड़ें</h2></div>
   <button class="green" id="startRec">🔴 अपनी Voice Record करें</button>
   <button class="light" id="stopRec" disabled>⏹️ Stop Recording</button>
   <button class="red hidden" id="deleteRec">🗑️ Recording Delete</button>
@@ -86,14 +93,14 @@ footer{text-align:center;color:#718096;font-size:13px;margin-top:20px}
 </section>
 
 <section class="card">
-  <div class="step"><div class="num">7</div><h2>Timeline</h2></div>
+  <div class="step"><div class="num">8</div><h2>Timeline</h2></div>
   <div id="timeline" class="timeline"><span class="muted">Photos upload करने पर timeline दिखेगी।</span></div>
   <button class="green" id="render">🎬 Create Video</button>
   <div id="renderStatus" class="status hidden"></div>
 </section>
 
 <section class="card">
-  <div class="step"><div class="num">8</div><h2>Final Video</h2></div>
+  <div class="step"><div class="num">9</div><h2>Final Video</h2></div>
   <video id="preview" controls playsinline class="hidden"></video>
   <button id="download" class="green hidden">⬇️ Video Export करें</button>
   <button id="reset" class="light">🔄 New Project</button>
@@ -171,7 +178,8 @@ $('demoScript').onclick=()=>{
 $('speak').onclick=()=>{
   const text=$('script').value.trim();
   if(!text) return alert('पहले script लिखें।');
-  speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='hi-IN'; u.rate=.95; speechSynthesis.speak(u);
+  speechSynthesis.cancel(); const v=getVoiceType(); const u=new SpeechSynthesisUtterance(text); u.lang=v.lang; u.rate=v.rate; u.pitch=v.pitch;
+  const vs=speechSynthesis.getVoices(); const m=vs.find(x=>x.lang.toLowerCase()===v.lang.toLowerCase())||vs.find(x=>x.lang.toLowerCase().startsWith(v.lang.split('-')[0].toLowerCase())); if(m)u.voice=m; speechSynthesis.speak(u);
 };
 
 $('startRec').onclick=async()=>{
