@@ -76,15 +76,26 @@ video{width:100%;margin-top:12px;border-radius:12px;background:#000}
 </section>
 
 <section class="card">
+<h2>🎙️ अपनी Voice जोड़ें</h2>
+<p>API credits के बिना अपनी आवाज़ रिकॉर्ड करके video में जोड़ सकते हैं।</p>
+<div class="row">
+<button id="record" class="green">🔴 Start Voice Recording</button>
+<button id="stopRecord" class="secondary" disabled>⏹️ Stop Recording</button>
+</div>
+<audio id="voicePreview" controls style="display:none"></audio>
+<div id="recordStatus" class="status">पहले अपनी voice record करें।</div>
+</section>
+
+<section class="card">
 <h2>🎥 Final Video</h2>
-<button id="render" class="green">▶️ Render Demo Video</button>
-<div id="progress" class="status">Video अभी तैयार नहीं है।</div>
+<button id="render" class="green">▶️ Render Video With Voice</button>
+<div id="progress" class="status">Voice record करने के बाद video render करें।</div>
 <video id="preview" controls playsinline style="display:none"></video>
 <a id="download" style="display:none;text-decoration:none">
 <button class="green">⬇️ Export Video</button>
 </a>
 <div class="small" style="margin-top:8px">
-Demo export browser में बनता है और WebM format में होता है। इसमें animated scenes और captions होंगे।
+यह browser में video + recorded voice को एक WebM file में export करने की कोशिश करता है। API credits की जरूरत नहीं है।
 </div>
 </section>
 
@@ -174,41 +185,131 @@ function drawScene(ctx,w,h,text,index,p){
   ctx.textAlign="left";
 }
 
+
+let voiceBlob=null, voiceUrl=null, recorder=null, voiceChunks=[], micStream=null;
+
+$("record").onclick=async()=>{
+  try{
+    micStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    voiceChunks=[];
+    recorder=new MediaRecorder(micStream);
+    recorder.ondataavailable=e=>{if(e.data.size)voiceChunks.push(e.data)};
+    recorder.onstop=()=>{
+      voiceBlob=new Blob(voiceChunks,{type:"audio/webm"});
+      if(voiceUrl)URL.revokeObjectURL(voiceUrl);
+      voiceUrl=URL.createObjectURL(voiceBlob);
+      $("voicePreview").src=voiceUrl;
+      $("voicePreview").style.display="block";
+      $("recordStatus").textContent="✅ Voice record हो गई। अब Render Video With Voice दबाएँ।";
+      $("recordStatus").className="status ok";
+      micStream.getTracks().forEach(t=>t.stop());
+    };
+    recorder.start();
+    $("record").disabled=true;
+    $("stopRecord").disabled=false;
+    $("recordStatus").textContent="🔴 Recording चल रही है… बोलते रहें।";
+    $("recordStatus").className="status";
+  }catch(e){
+    $("recordStatus").textContent="❌ Microphone permission नहीं मिली। Browser में microphone Allow करें।";
+    $("recordStatus").className="status error";
+  }
+};
+
+$("stopRecord").onclick=()=>{
+  if(recorder && recorder.state!=="inactive") recorder.stop();
+  $("record").disabled=false;
+  $("stopRecord").disabled=true;
+};
+
 async function renderVideo(){
   if(!scenes.length)showScenes();
   if(!scenes.length)return;
-  $("render").disabled=true;$("download").style.display="none";$("preview").style.display="none";
-  $("progress").textContent="⏳ Video render हो रहा है… फोन को बंद न करें।";
+  if(!voiceBlob){
+    $("progress").textContent="❌ पहले अपनी voice record करें।";
+    $("progress").className="status error";
+    return;
+  }
+
+  $("render").disabled=true;
+  $("download").style.display="none";
+  $("preview").style.display="none";
+  $("progress").textContent="⏳ Video + voice render हो रहा है…";
 
   const canvas=document.createElement("canvas");
-  if($("format").value==="9:16"){canvas.width=720;canvas.height=1280}else{canvas.width=1280;canvas.height=720}
+  if($("format").value==="9:16"){canvas.width=720;canvas.height=1280}
+  else{canvas.width=1280;canvas.height=720}
   const ctx=canvas.getContext("2d");
-  const stream=canvas.captureStream(30);
-  const mime=MediaRecorder.isTypeSupported("video/webm;codecs=vp9")?"video/webm;codecs=vp9":"video/webm";
-  const rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:3500000});
-  const chunks=[];rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+  const videoStream=canvas.captureStream(30);
+
+  // Put the recorded voice into an <audio> element and capture its audio stream.
+  const audioEl=document.createElement("audio");
+  audioEl.src=voiceUrl;
+  audioEl.preload="auto";
+  audioEl.playsInline=true;
+  document.body.appendChild(audioEl);
+
+  let audioStream=null;
+  if(typeof audioEl.captureStream==="function"){
+    audioStream=audioEl.captureStream();
+  }else if(typeof audioEl.mozCaptureStream==="function"){
+    audioStream=audioEl.mozCaptureStream();
+  }
+
+  if(!audioStream || !audioStream.getAudioTracks().length){
+    document.body.removeChild(audioEl);
+    $("progress").textContent="❌ इस browser में recorded voice को video में जोड़ना उपलब्ध नहीं है। Voice Preview फिर भी चल सकती है।";
+    $("progress").className="status error";
+    $("render").disabled=false;
+    return;
+  }
+
+  const combined=new MediaStream([
+    ...videoStream.getVideoTracks(),
+    ...audioStream.getAudioTracks()
+  ]);
+  const mime=MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus")
+    ?"video/webm;codecs=vp9,opus"
+    :MediaRecorder.isTypeSupported("video/webm;codecs=vp8,opus")
+    ?"video/webm;codecs=vp8,opus"
+    :"video/webm";
+
+  const rec=new MediaRecorder(combined,{mimeType:mime,videoBitsPerSecond:3500000});
+  const chunks=[];
+  rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
   const stopped=new Promise(resolve=>rec.onstop=()=>resolve(new Blob(chunks,{type:"video/webm"})));
+
+  const audioDuration=Number.isFinite(audioEl.duration) && audioEl.duration>0
+    ?audioEl.duration:Number($("duration").value);
+  const total=Math.max(2,Math.min(Number($("duration").value),audioDuration));
+  const per=total/scenes.length;
+
+  try{await audioEl.play()}catch(e){}
   rec.start(200);
 
-  const total=Number($("duration").value);
-  const per=Math.max(2,total/scenes.length);
   for(let i=0;i<scenes.length;i++){
-    const start=performance.now();
-    while((performance.now()-start)/1000<per){
-      const p=Math.min(1,(performance.now()-start)/(per*1000));
+    const sceneStart=performance.now();
+    while((performance.now()-sceneStart)/1000<per){
+      const p=Math.min(1,(performance.now()-sceneStart)/(per*1000));
       drawScene(ctx,canvas.width,canvas.height,scenes[i],i,p);
-      const pct=Math.round(((i+p)/scenes.length)*100);
-      $("progress").textContent=`⏳ Rendering… ${pct}%`;
+      $("progress").textContent=`⏳ Rendering… ${Math.round(((i+p)/scenes.length)*100)}%`;
       await new Promise(requestAnimationFrame);
     }
   }
+
   rec.stop();
-  videoBlob=await stopped;
+  const blob=await stopped;
+  try{audioEl.pause()}catch(e){}
+  document.body.removeChild(audioEl);
+
   if(currentUrl)URL.revokeObjectURL(currentUrl);
-  currentUrl=URL.createObjectURL(videoBlob);
-  $("preview").src=currentUrl;$("preview").style.display="block";
-  $("download").href=currentUrl;$("download").download="yogendra-ai-demo-video.webm";$("download").style.display="block";
-  $("progress").textContent="🎉 Demo video तैयार है। नीचे Export Video दबाएँ।";
+  currentUrl=URL.createObjectURL(blob);
+  $("preview").src=currentUrl;
+  $("preview").style.display="block";
+  $("download").href=currentUrl;
+  $("download").download="yogendra-ai-video-with-voice.webm";
+  $("download").style.display="block";
+  $("progress").textContent="🎉 Video + voice तैयार है। नीचे Export Video दबाएँ।";
+  $("progress").className="status ok";
   $("render").disabled=false;
 }
 $("render").onclick=renderVideo;
