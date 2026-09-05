@@ -61,6 +61,19 @@ video{width:100%;margin-top:12px;border-radius:12px;background:#000}
 </section>
 
 <section class="card">
+<h2>💬 AI Chat Assistant</h2>
+<p>Video बनाने के बारे में सवाल पूछें या अपनी script के लिए मदद लें।</p>
+<div id="chatBox" style="height:220px;overflow:auto;border:1px solid #d8deea;border-radius:11px;padding:10px;background:#fafbff">
+  <div class="small">🤖 नमस्ते! मैं Video Maker Assistant हूँ। आप topic, script, scenes या voice के बारे में पूछ सकते हैं।</div>
+</div>
+<div class="row">
+  <input id="chatInput" placeholder="जैसे: मेरी video का intro लिखो">
+  <button id="chatSend" class="green">📨 Send</button>
+</div>
+<div class="small">यह chat अभी Demo/Local mode में है, इसलिए API credits की जरूरत नहीं है।</div>
+</section>
+
+<section class="card">
 <h2>📖 Script</h2>
 <textarea id="script" placeholder="Script यहाँ आएगी..."></textarea>
 <div class="row">
@@ -83,6 +96,7 @@ video{width:100%;margin-top:12px;border-radius:12px;background:#000}
 <button id="stopRecord" class="secondary" disabled>⏹️ Stop Recording</button>
 </div>
 <audio id="voicePreview" controls style="display:none"></audio>
+<button id="deleteRecording" class="secondary" style="display:none">🗑️ Delete Recording</button>
 <div id="recordStatus" class="status">पहले अपनी voice record करें।</div>
 </section>
 
@@ -186,6 +200,48 @@ function drawScene(ctx,w,h,text,index,p){
 }
 
 
+
+function addChat(who,text){
+  const box=$("chatBox");
+  const div=document.createElement("div");
+  div.style.margin="8px 0";
+  div.style.padding="9px";
+  div.style.borderRadius="10px";
+  div.style.background=who==="You"?"#eaf2ff":"#f1f5f9";
+  div.innerHTML=`<b>${who}:</b> ${escapeHtml(text)}`;
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+}
+function chatReply(q){
+  const x=q.toLowerCase();
+  if(x.includes("intro")||x.includes("शुरू")){
+    return "आपकी video की शुरुआत ऐसे कर सकते हैं: “क्या आप जानते हैं कि छोटी-सी शुरुआत आपकी पूरी जिंदगी बदल सकती है? आज की video में जानिए कैसे।”";
+  }
+  if(x.includes("script")||x.includes("स्क्रिप्ट")){
+    return "Topic ऊपर लिखें और Generate Script दबाएँ। फिर script को अपनी जरूरत के अनुसार edit कर सकते हैं।";
+  }
+  if(x.includes("voice")||x.includes("आवाज")){
+    return "Voice section में Start Voice Recording दबाएँ, बोलें, फिर Stop Recording दबाएँ। जरूरत हो तो Delete Recording से recording हटाकर नई recording करें।";
+  }
+  if(x.includes("scene")||x.includes("सीन")){
+    return "Script के बाद Generate Scenes दबाएँ। हर scene में आपकी कहानी का एक छोटा हिस्सा दिखेगा।";
+  }
+  if(x.includes("video")||x.includes("वीडियो")){
+    return "पहले script और scenes तैयार करें, फिर अपनी voice record करें और Render Video With Voice दबाएँ।";
+  }
+  return "मैं अभी Video Maker के topic, script, scenes, voice और video workflow में मदद कर सकता हूँ।";
+}
+$("chatSend").onclick=()=>{
+  const q=$("chatInput").value.trim();
+  if(!q)return;
+  addChat("You",q);
+  $("chatInput").value="";
+  setTimeout(()=>addChat("Assistant",chatReply(q)),250);
+};
+$("chatInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter")$("chatSend").click();
+});
+
 let voiceBlob=null, voiceUrl=null, recorder=null, voiceChunks=[], micStream=null;
 
 $("record").onclick=async()=>{
@@ -200,6 +256,7 @@ $("record").onclick=async()=>{
       voiceUrl=URL.createObjectURL(voiceBlob);
       $("voicePreview").src=voiceUrl;
       $("voicePreview").style.display="block";
+      $("deleteRecording").style.display="block";
       $("recordStatus").textContent="✅ Voice record हो गई। अब Render Video With Voice दबाएँ।";
       $("recordStatus").className="status ok";
       micStream.getTracks().forEach(t=>t.stop());
@@ -219,6 +276,22 @@ $("stopRecord").onclick=()=>{
   if(recorder && recorder.state!=="inactive") recorder.stop();
   $("record").disabled=false;
   $("stopRecord").disabled=true;
+};
+
+$("deleteRecording").onclick=()=>{
+  if(recorder && recorder.state!=="inactive") recorder.stop();
+  if(micStream) micStream.getTracks().forEach(t=>t.stop());
+  if(voiceUrl) URL.revokeObjectURL(voiceUrl);
+  voiceBlob=null; voiceUrl=null; recorder=null; voiceChunks=[];
+  $("voicePreview").pause();
+  $("voicePreview").removeAttribute("src");
+  $("voicePreview").load();
+  $("voicePreview").style.display="none";
+  $("deleteRecording").style.display="none";
+  $("record").disabled=false;
+  $("stopRecord").disabled=true;
+  $("recordStatus").textContent="🗑️ Recording delete हो गई। अब नई voice record कर सकते हैं।";
+  $("recordStatus").className="status ok";
 };
 
 async function renderVideo(){
