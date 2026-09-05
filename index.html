@@ -1,225 +1,284 @@
 <!doctype html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Yogendra AI Editing — AI Video Generator</title>
 <link rel="icon" type="image/png" sizes="512x512" href="/yogendra-logo.png">
 <link rel="apple-touch-icon" href="/yogendra-logo.png">
-<title>Yogendra AI Editing</title>
 <style>
-  *{box-sizing:border-box}
-  body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}
-  header{background:#111827;color:#fff;padding:18px 16px;text-align:center}
-  .brand{font-size:22px;font-weight:800}
-  .tag{margin-top:6px;opacity:.85;font-size:14px}
-  main{max-width:820px;margin:auto;padding:18px}
-  .card{background:#fff;padding:18px;margin:14px 0;border-radius:16px;box-shadow:0 6px 24px #0001}
-  h1,h2{margin-top:0}
-  textarea,input,select,button{width:100%;padding:13px;margin:7px 0;font-size:16px;border-radius:10px}
-  textarea,input,select{border:1px solid #d8deea;background:#fff}
-  textarea{min-height:180px;resize:vertical}
-  button{border:0;background:#111827;color:#fff;font-weight:700;cursor:pointer}
-  button:disabled{opacity:.55;cursor:not-allowed}
-  .secondary{background:#e9edf5;color:#172033}
-  .status{padding:11px;background:#eef2ff;border-radius:10px;margin-top:10px;white-space:pre-wrap}
-  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .scene{border:1px solid #e0e5ed;border-radius:12px;padding:12px;margin:9px 0}
-  .scene b{display:block;margin-bottom:5px}
-  audio{width:100%;margin-top:10px}
-  .small{font-size:13px;color:#667085}
-  @media(max-width:600px){.row{grid-template-columns:1fr}}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#eef2f7;color:#101827}
+header{background:#101827;color:#fff;padding:18px 16px;position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}.brand img{width:38px;height:38px;border-radius:50%;object-fit:cover}
+.wrap{max-width:900px;margin:auto;padding:16px}.card{background:#fff;border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 5px 20px #00000012}
+h1{font-size:28px;margin:4px 0 8px}h2{font-size:21px;margin:0 0 12px}.muted{color:#64748b;font-size:14px}
+label{display:block;font-weight:700;margin:12px 0 6px}input,select,textarea{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:12px;font-size:16px;background:#fff}
+textarea{min-height:150px;resize:vertical}button{border:0;border-radius:12px;padding:13px 16px;font-size:16px;font-weight:800;cursor:pointer;background:#101827;color:#fff;margin:8px 6px 0 0}
+button.secondary{background:#e2e8f0;color:#101827}button.green{background:#15803d}button:disabled{opacity:.5;cursor:not-allowed}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.progress{height:10px;background:#e2e8f0;border-radius:20px;overflow:hidden}.bar{height:100%;width:0;background:#2563eb;transition:.3s}
+.status{padding:11px;border-radius:12px;background:#f1f5f9;margin-top:10px;white-space:pre-wrap}.error{background:#fee2e2;color:#991b1b}.ok{background:#dcfce7;color:#166534}
+.scene{border:1px solid #dbe3ee;border-radius:14px;padding:12px;margin:10px 0}.scene img{width:100%;max-height:420px;object-fit:cover;border-radius:10px;background:#e2e8f0}.scene-title{font-weight:800}.small{font-size:13px;color:#475569}
+video{width:100%;border-radius:14px;background:#000}.pill{display:inline-block;background:#e0e7ff;color:#3730a3;padding:5px 9px;border-radius:99px;font-size:12px;font-weight:700}
+@media(max-width:650px){.grid{grid-template-columns:1fr}h1{font-size:24px}}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">🎬 Yogendra AI Editing</div>
-  <div class="tag">AI Script → AI Voice → Scenes</div>
-</header>
+<header><div class="brand"><img src="/yogendra-logo.png" onerror="this.style.display='none'"> Yogendra AI Editing</div></header>
+<main class="wrap">
+<div class="card">
+<h1>🎬 Complete AI Video Generator</h1>
+<div class="muted">Story → AI Script → AI Images → AI Voice → Animation → Video</div>
+<label>Video Topic / Story</label>
+<textarea id="topic" placeholder="उदाहरण: 0 से हीरो कैसे बनें — एक प्रेरणादायक कहानी">0 se hero kese bane</textarea>
+<div class="grid">
+<div><label>Language</label><select id="lang"><option>Hindi</option><option>English</option></select></div>
+<div><label>Video Format</label><select id="format"><option value="9:16">YouTube Shorts — 9:16</option><option value="16:9">YouTube Long — 16:9</option></select></div>
+</div>
+<label>Duration</label>
+<select id="duration"><option value="1">1 मिनट</option><option value="5">5 मिनट</option><option value="10">10 मिनट</option><option value="20">20 मिनट</option></select>
+<button id="scriptBtn">🤖 Generate AI Script</button>
+<div id="status" class="status">शुरू करने के लिए Generate AI Script दबाएँ।</div>
+</div>
 
-<main>
-  <section class="card">
-    <h1>🤖 Automatic AI Video</h1>
-    <p>Topic लिखें और AI से script तथा voice तैयार करें।</p>
+<div class="card">
+<h2>📝 AI Script</h2>
+<textarea id="script" placeholder="AI script यहाँ आएगी..."></textarea>
+<button id="sceneBtn" class="secondary" disabled>🎞️ Create AI Scenes</button>
+<button id="voiceBtn" class="secondary" disabled>🎙️ Generate AI Voice</button>
+<div class="progress"><div id="bar" class="bar"></div></div>
+</div>
 
-    <label>Video Topic</label>
-    <input id="topic" placeholder="जैसे: ₹0 से बिज़नेस कैसे शुरू करें?">
+<div class="card">
+<h2>🎞️ AI Scenes & Images</h2>
+<div id="scenes"><div class="muted">पहले script generate करें।</div></div>
+<button id="imagesBtn" class="secondary" disabled>🖼️ Generate AI Images</button>
+</div>
 
-    <div class="row">
-      <div>
-        <label>Language</label>
-        <select id="language">
-          <option value="Hindi">Hindi</option>
-          <option value="English">English</option>
-        </select>
-      </div>
-      <div>
-        <label>Duration</label>
-        <select id="duration">
-          <option value="1 मिनट">1 मिनट</option>
-          <option value="5 मिनट">5 मिनट</option>
-          <option value="10 मिनट">10 मिनट</option>
-          <option value="20 मिनट">20 मिनट</option>
-        </select>
-      </div>
-    </div>
+<div class="card">
+<h2>🎙️ AI Voice</h2>
+<select id="voice"><option value="alloy">Alloy</option><option value="ash">Ash</option><option value="coral">Coral</option><option value="sage">Sage</option><option value="verse">Verse</option></select>
+<audio id="audio" controls style="width:100%;margin-top:10px;display:none"></audio>
+</div>
 
-    <button id="generateScript">🤖 Generate AI Script</button>
-    <div id="scriptStatus" class="status">पहले Topic लिखें।</div>
-  </section>
+<div class="card">
+<h2>🎥 Final Video</h2>
+<div class="muted">AI images को smooth zoom/pan animation के साथ video में जोड़कर browser में render किया जाएगा.</div>
+<button id="renderBtn" class="green" disabled>▶️ Render Final Video</button>
+video id="preview" controls playsinline style="display:none"></video>
+<div id="downloadBox"></div><div id="exportNote" class="small" style="margin-top:8px"></div>
+</div>
 
-  <section class="card">
-    <h2>📖 AI Script</h2>
-    <textarea id="script" placeholder="AI script यहाँ आएगी..."></textarea>
-    <button id="regenerate" class="secondary">🔄 Regenerate Script</button>
-  </section>
-
-  <section class="card">
-    <h2>🎬 AI Scenes</h2>
-    <div id="scenes"><div class="small">Script generate करने के बाद scenes यहाँ दिखाई देंगे।</div></div>
-  </section>
-
-  <section class="card">
-    <h2>🎙️ AI Voice</h2>
-    <label>Voice</label>
-    <select id="voice">
-      <option value="alloy">Alloy — Natural</option>
-      <option value="ash">Ash — Clear</option>
-      <option value="coral">Coral — Warm</option>
-      <option value="sage">Sage — Story</option>
-      <option value="verse">Verse — Expressive</option>
-    </select>
-
-    <button id="generateVoice">🎙️ Generate AI Voice</button>
-    <audio id="audio" controls></audio>
-    <div id="voiceStatus" class="status">Script तैयार होने के बाद Voice बनाएं।</div>
-  </section>
-
-  <section class="card">
-    <h2>🚀 अगला चरण</h2>
-    <p>AI Images + HD Animation + Subtitles + Final MP4 को अगले चरण में जोड़ा जा सकता है।</p>
-  </section>
+<div class="card">
+<h2>ℹ️ जरूरी बात</h2>
+<div class="muted">AI Script, AI Voice और AI Images चलाने के लिए Vercel में आपकी OpenAI API key और API credits जरूरी हैं. API key किसी के साथ share न करें.</div>
+</div>
 </main>
 
 <script>
-const $ = id => document.getElementById(id);
+const $=id=>document.getElementById(id);
+let scenes=[], voiceBlob=null, imageUrls=[], audioUrl=null;
 
-async function requestJson(url, body){
-  const r = await fetch(url,{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(body)
-  });
-  const text = await r.text();
-  let data;
-  try{ data = JSON.parse(text); }catch{ data = {error:text || 'Server error'}; }
-  if(!r.ok) throw new Error(
-    typeof data.error === 'string' ? data.error : JSON.stringify(data.error || data)
-  );
+function setStatus(msg,type=""){ $("status").textContent=msg; $("status").className="status "+type; }
+function progress(n){$("bar").style.width=n+"%";}
+function enable(){ $("sceneBtn").disabled=false; $("voiceBtn").disabled=false; }
+
+async function postJSON(url,body){
+  const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  const text=await r.text(); let data; try{data=JSON.parse(text)}catch{data={raw:text}};
+  if(!r.ok) throw new Error(data?.error?.message||data?.error||data?.message||text||("HTTP "+r.status));
   return data;
 }
 
-function renderScenes(data){
-  const list = Array.isArray(data.scenes) ? data.scenes : [];
-  if(!list.length){
-    $('scenes').innerHTML = '<div class="small">Scenes नहीं मिले। Script को फिर से generate करें।</div>';
-    return;
-  }
-  $('scenes').innerHTML = list.map((s,i)=>`
-    <div class="scene">
-      <b>Scene ${i+1}: ${escapeHtml(s.title || 'Scene')}</b>
-      <div>${escapeHtml(s.narration || '')}</div>
-      <div class="small">Visual: ${escapeHtml(s.image_prompt || '')}</div>
-    </div>
-  `).join('');
-}
-
-function escapeHtml(value){
-  return String(value ?? '').replace(/[&<>"']/g,c=>({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
-  }[c]));
-}
-
-async function makeScript(){
-  const topic = $('topic').value.trim();
-  if(!topic){
-    $('scriptStatus').textContent='❌ पहले Topic लिखें।';
-    return;
-  }
-
-  $('generateScript').disabled = true;
-  $('regenerate').disabled = true;
-  $('scriptStatus').textContent='⏳ AI script बन रही है...';
-
+$("scriptBtn").onclick=async()=>{
+  const topic=$("topic").value.trim(); if(!topic)return setStatus("पहले topic/story लिखें।","error");
+  $("scriptBtn").disabled=true; progress(10); setStatus("AI script बनाई जा रही है…");
   try{
-    const story = `Topic: ${topic}
-Language: ${$('language').value}
-Duration: ${$('duration').value}`;
+    const d=await postJSON("/api/script",{story:`Topic: ${topic}\nLanguage: ${$("lang").value}\nDuration: ${$("duration").value} minutes`});
+    if(d.scenes){
+      scenes=d.scenes; $("script").value=scenes.map((s,i)=>`Scene ${i+1}: ${s.title}\n${s.narration}`).join("\n\n");
+      renderScenes();
+    }else{$("script").value=d.raw||JSON.stringify(d,null,2)}
+    enable(); progress(25); setStatus("AI Script तैयार है। अब AI Scenes या AI Voice बना सकते हैं।","ok");
+  }catch(e){setStatus("❌ "+e.message,"error")}
+  finally{$("scriptBtn").disabled=false}
+};
 
-    const data = await requestJson('/api/script',{story});
+function renderScenes(){
+  $("scenes").innerHTML=scenes.map((s,i)=>`<div class="scene" id="scene${i}">
+  <div class="scene-title">Scene ${i+1}: ${escapeHtml(s.title||"Scene")}</div>
+  <p>${escapeHtml(s.narration||"")}</p>
+  <div class="small">${escapeHtml(s.image_prompt||"")}</div>
+  <div id="img${i}"></div></div>`).join("");
+  $("imagesBtn").disabled=false;
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 
-    const scenes = Array.isArray(data.scenes) ? data.scenes : [];
-    if(scenes.length){
-      $('script').value = scenes.map((s,i)=>`Scene ${i+1}
-${s.narration || ''}`).join('\n\n');
-      renderScenes(data);
+$("sceneBtn").onclick=()=>{renderScenes();setStatus("Scenes तैयार हैं। अब AI Images बनाइए।","ok");};
+
+$("imagesBtn").onclick=async()=>{
+  if(!scenes.length)return;
+  $("imagesBtn").disabled=true; imageUrls=[]; progress(30);
+  try{
+    for(let i=0;i<scenes.length;i++){
+      setStatus(`AI Image ${i+1}/${scenes.length} बनाई जा रही है…`);
+      const d=await postJSON("/api/image",{prompt:scenes[i].image_prompt||scenes[i].narration||scenes[i].title});
+      if(!d.image_base64)throw new Error("Image API ने image नहीं लौटाई।");
+      const url="data:image/png;base64,"+d.image_base64; imageUrls.push(url);
+      $("img"+i).innerHTML=`<img src="${url}" alt="AI scene ${i+1}">`;
+      progress(30+Math.round((i+1)/scenes.length*45));
+    }
+    $("renderBtn").disabled=false; setStatus("सभी AI Images तैयार हैं। अब Voice बनाकर Final Video render कर सकते हैं।","ok");
+  }catch(e){setStatus("❌ "+e.message,"error");$("imagesBtn").disabled=false}
+};
+
+$("voiceBtn").onclick=async()=>{
+  const text=$("script").value.trim(); if(!text)return setStatus("पहले script बनाइए।","error");
+  $("voiceBtn").disabled=true; progress(35); setStatus("AI Voice बनाई जा रही है…");
+  try{
+    const d=await postJSON("/api/voice",{text,voice:$("voice").value});
+    if(d.audio_base64){
+      voiceBlob=base64ToBlob(d.audio_base64,"audio/mpeg");
     }else{
-      $('script').value = data.raw || '';
-      $('scenes').innerHTML = '<div class="small">Scene data की जगह raw response मिला है।</div>';
+      throw new Error("Voice API ने audio नहीं लौटाया।");
     }
+    if(audioUrl)URL.revokeObjectURL(audioUrl); audioUrl=URL.createObjectURL(voiceBlob);
+    $("audio").src=audioUrl; $("audio").style.display="block";
+    progress(55); setStatus("AI Voice तैयार है।","ok");
+    if(imageUrls.length)$("renderBtn").disabled=false;
+  }catch(e){setStatus("❌ "+e.message,"error")}
+  finally{$("voiceBtn").disabled=false}
+};
 
-    $('scriptStatus').textContent='✅ AI Script तैयार है।';
-    $('voiceStatus').textContent='अब Generate AI Voice दबाएँ।';
-  }catch(e){
-    $('scriptStatus').textContent='❌ '+e.message;
-  }finally{
-    $('generateScript').disabled = false;
-    $('regenerate').disabled = false;
-  }
+function base64ToBlob(b64,type){
+  const bytes=Uint8Array.from(atob(b64),c=>c.charCodeAt(0)); return new Blob([bytes],{type});
 }
 
-async function makeVoice(){
-  const text = $('script').value.trim();
-  if(!text){
-    $('voiceStatus').textContent='❌ पहले AI Script तैयार करें।';
-    return;
-  }
-
-  $('generateVoice').disabled = true;
-  $('voiceStatus').textContent='⏳ AI voice बन रही है...';
-
+$("renderBtn").onclick=async()=>{
+  if(!imageUrls.length)return setStatus("पहले AI Images बनाइए।","error");
+  $("renderBtn").disabled=true; setStatus("Final video render हो रहा है… फोन को इस दौरान बंद न करें।"); progress(60);
   try{
-    const r = await fetch('/api/voice',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({text,voice:$('voice').value})
-    });
+    const video=await renderCanvasVideo(imageUrls,scenes,$("format").value,voiceBlob);
+    renderedVideoBlob = video; if(window.__setRenderedVideoBlob) window.__setRenderedVideoBlob(video); const url=URL.createObjectURL(video);
+    $("preview").src=url; $("preview").style.display="block";
+    $("downloadBox").innerHTML=`<a href="${url}" download="yogendra-ai-video.webm"><button class="green">⬇️ Export Final Video</button></a><div class="small" style="margin-top:8px">Export पूरा है। Video WebM format में सेव होगा और YouTube पर upload किया जा सकता है.</div>`;
+    progress(100); setStatus("🎉 Final video तैयार है!","ok");
+  }catch(e){setStatus("❌ Video render error: "+e.message,"error")}
+  finally{$("renderBtn").disabled=false}
+};
 
-    if(!r.ok){
-      const t = await r.text();
-      let msg = t;
-      try{
-        const j = JSON.parse(t);
-        msg = typeof j.error === 'string' ? j.error : JSON.stringify(j.error || j);
-      }catch{}
-      throw new Error(msg || 'Voice server error');
-    }
-
-    const blob = await r.blob();
-    const url = URL.createObjectURL(blob);
-    $('audio').src = url;
-    $('audio').style.display = 'block';
-    $('voiceStatus').textContent='✅ AI Voice तैयार है। ऊपर Play दबाएँ।';
-  }catch(e){
-    $('voiceStatus').textContent='❌ '+e.message;
-  }finally{
-    $('generateVoice').disabled = false;
+async function renderCanvasVideo(urls,scs,ratio,audioBlob){
+  const canvas=document.createElement("canvas");
+  if(ratio==="9:16"){canvas.width=720;canvas.height=1280}else{canvas.width=1280;canvas.height=720}
+  const ctx=canvas.getContext("2d");
+  const stream=canvas.captureStream(30);
+  let audioContext, audioDest;
+  if(audioBlob){
+    const audioEl=new Audio(URL.createObjectURL(audioBlob)); audioEl.crossOrigin="anonymous";
+    await new Promise((res,rej)=>{audioEl.oncanplay=res;audioEl.onerror=rej;audioEl.load()});
+    audioContext=new AudioContext(); audioDest=audioContext.createMediaStreamDestination();
+    const source=audioContext.createMediaElementSource(audioEl); source.connect(audioDest); source.connect(audioContext.destination);
+    audioDest.stream.getAudioTracks().forEach(t=>stream.addTrack(t));
   }
+  const mime=MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus")?"video/webm;codecs=vp9,opus":"video/webm";
+  const rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:4000000});
+  const chunks=[]; rec.ondataavailable=e=>e.data.size&&chunks.push(e.data);
+  const stopped=new Promise(resolve=>rec.onstop=()=>resolve(new Blob(chunks,{type:"video/webm"})));
+  rec.start(250);
+  const imgs=[];
+  for(const u of urls){const im=new Image();im.src=u;await new Promise((res,rej)=>{im.onload=res;im.onerror=rej});imgs.push(im)}
+  let total=Math.max(12,Math.min(60,Number($("duration").value)*6));
+  if(audioBlob){const tmp=new Audio();tmp.src=URL.createObjectURL(audioBlob);await new Promise(r=>{tmp.onloadedmetadata=r;tmp.onerror=r;tmp.load()}); if(tmp.duration&&isFinite(tmp.duration))total=Math.min(300,tmp.duration)}
+  const per=Math.max(2,total/imgs.length);
+  const start=performance.now();
+  for(let i=0;i<imgs.length;i++){
+    const t0=performance.now(), img=imgs[i];
+    while(performance.now()-t0<per*1000){
+      const p=Math.min(1,(performance.now()-t0)/(per*1000));
+      const scale=1+0.08*p, iw=canvas.width*scale, ih=canvas.height*scale;
+      const iw0=img.width||canvas.width, ih0=img.height||canvas.height;
+      const imgRatio=iw0/ih0, canRatio=canvas.width/canvas.height;
+      let dw,dh;if(imgRatio>canRatio){dh=ih;dw=dh*imgRatio}else{dw=iw;dh=dw/imgRatio}
+      const pan=(p-.5)*0.08; const x=(canvas.width-dw)/2+pan*canvas.width; const y=(canvas.height-dh)/2;
+      ctx.fillStyle="#000";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,x,y,dw,dh);
+      const narration=scs[i]?.narration||"";
+      const lines=wrapText(ctx,narration,canvas.width-60,30);
+      ctx.fillStyle="rgba(0,0,0,.58)";ctx.fillRect(20,canvas.height-20-lines.length*38-28,canvas.width-40,lines.length*38+28);
+      ctx.fillStyle="#fff";ctx.font="700 28px system-ui";lines.forEach((line,j)=>ctx.fillText(line,30,canvas.height-30-(lines.length-1-j)*38));
+      progress(60+Math.round(((i+p)/imgs.length)*35));
+      await new Promise(requestAnimationFrame);
+    }
+  }
+  if(audioBlob){ /* give audio a moment to finish naturally */ }
+  rec.stop();
+  if(audioContext) setTimeout(()=>audioContext.close(),1000);
+  return await stopped;
 }
-
-$('generateScript').addEventListener('click',makeScript);
-$('regenerate').addEventListener('click',makeScript);
-$('generateVoice').addEventListener('click',makeVoice);
-$('audio').style.display = 'block';
+function wrapText(ctx,text,maxWidth,fontSize){
+  ctx.font=`700 ${fontSize}px system-ui`;const words=String(text).split(/\s+/),lines=[];let line="";
+  for(const w of words){const test=line?line+" "+w:w;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=w}else line=test}
+  if(line)lines.push(line);return lines.slice(-4);
+}
 </script>
+
+<script type="module">
+import { FFmpeg } from "https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js";
+import { fetchFile, toBlobURL } from "https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js";
+
+const mp4Btn = document.createElement("button");
+mp4Btn.className = "green";
+mp4Btn.textContent = "🎬 Export MP4";
+mp4Btn.style.display = "none";
+document.getElementById("downloadBox").appendChild(mp4Btn);
+
+let renderedVideoBlob = null;
+let ffmpeg = null;
+
+window.__setRenderedVideoBlob = (blob) => {
+  renderedVideoBlob = blob;
+  mp4Btn.style.display = "inline-block";
+};
+
+mp4Btn.onclick = async () => {
+  if (!renderedVideoBlob) return;
+  mp4Btn.disabled = true;
+  mp4Btn.textContent = "⏳ MP4 बन रही है…";
+  try {
+    if (!ffmpeg) {
+      ffmpeg = new FFmpeg();
+      const baseURL = "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm";
+      await ffmpeg.load({
+        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm")
+      });
+    }
+    await ffmpeg.writeFile("input.webm", await fetchFile(renderedVideoBlob));
+    await ffmpeg.exec([
+      "-i", "input.webm",
+      "-c:v", "libx264",
+      "-preset", "veryfast",
+      "-pix_fmt", "yuv420p",
+      "-c:a", "aac",
+      "-b:a", "128k",
+      "-movflags", "+faststart",
+      "output.mp4"
+    ]);
+    const data = await ffmpeg.readFile("output.mp4");
+    const mp4 = new Blob([data.buffer], {type:"video/mp4"});
+    const url = URL.createObjectURL(mp4);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "yogendra-ai-video.mp4";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+    mp4Btn.textContent = "✅ MP4 Exported";
+  } catch (e) {
+    console.error(e);
+    mp4Btn.disabled = false;
+    mp4Btn.textContent = "🎬 Export MP4";
+    alert("MP4 export नहीं हो पाया। पहले WebM export/download करके देखें।");
+  }
+};
+</script>
+
 </body>
 </html>
