@@ -1,40 +1,97 @@
 <!doctype html>
-<html lang="en">
+<html lang="hi">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Yogendra AI Editing – AI Video Maker</title>
-  <meta name="description" content="Yogendra AI Editing – AI photo to video maker with animation, voice and video export.">
-  <meta name="keywords" content="Yogendra AI Editing, AI Video Maker, AI photo to video, photo to video, AI script, AI voice, animation, YouTube Shorts, video editor">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://yogendra-ai-editing.vercel.app/">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Yogendra AI Editing – AI Video Maker">
-  <meta property="og:description" content="AI photo to video maker with animation, voice and video export.">
-  <meta property="og:url" content="https://yogendra-ai-editing.vercel.app/">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Yogendra AI Editing – AI Video Maker">
-  <meta name="twitter:description" content="AI photo to video maker with animation, voice and video export.">
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yogendra AI Editing – Long Video Maker</title>
+<meta name="description" content="Yogendra AI Editing – original educational and business long video maker with script, scenes, voice, photos and export.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://yogendra-ai-editing.vercel.app/">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#07101f;color:#eef4ff;font-family:system-ui,Arial,sans-serif}
+.wrap{max-width:980px;margin:auto;padding:18px}.hero{padding:22px;border-radius:22px;background:linear-gradient(135deg,#182b69,#17204b);margin-bottom:16px}
+h1{margin:0 0 8px;font-size:30px}.muted{color:#b9c5dd}.card{background:#101b2e;border:1px solid #263758;border-radius:18px;padding:18px;margin:14px 0}
+label{display:block;margin:12px 0 6px;font-weight:700}input,select,textarea{width:100%;padding:13px;border-radius:12px;border:1px solid #344665;background:#091426;color:#fff;font-size:16px}
+textarea{min-height:150px}button{border:0;border-radius:12px;padding:12px 16px;font-weight:800;font-size:15px;cursor:pointer;margin:7px 5px 0 0;background:#2f7df6;color:white}
+button.secondary{background:#263758}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.status{padding:12px;border-radius:12px;background:#0a1425;color:#bfe0ff;margin-top:10px}
+.scene{padding:13px;border:1px solid #2a3b5d;border-radius:14px;background:#0b1628;margin:8px 0}.scene b{color:#8fc1ff}
+#preview{width:100%;background:#000;border-radius:14px;min-height:180px}.pill{display:inline-block;padding:5px 9px;border-radius:999px;background:#20345c;margin:3px;font-size:12px}
+@media(max-width:650px){.row{grid-template-columns:1fr}h1{font-size:25px}}
+</style>
 </head>
 <body>
-  <header>
-    <h1>Yogendra AI Editing – AI Video Maker</h1>
-    <p>AI Video Maker • Photo to Video • AI Script • Voice • Animation • YouTube Shorts</p>
-  </header>
+<div class="wrap">
+<header class="hero">
+<h1>🎬 Yogendra AI Editing – Long Video Maker</h1>
+<p class="muted">Topic → Original Script → Scenes → Voice → Photos → Subtitles → Video Export</p>
+<span class="pill">Education</span><span class="pill">Business</span><span class="pill">YouTube</span><span class="pill">16:9 / 9:16</span>
+</header>
 
-  <main id="app">
-    <!-- Existing app UI loads below -->
-  </main>
+<section class="card">
+<h2>1. Video Settings</h2>
+<div class="row">
+<div><label>Topic</label><input id="topic" value="₹0 से बिज़नेस शुरू करने का पूरा सफर"></div>
+<div><label>Length</label><select id="length"><option>5</option><option selected>10</option><option>15</option><option>20</option><option>24</option><option>30</option></select></div>
+<div><label>Format</label><select id="format"><option>16:9 YouTube</option><option>9:16 Shorts</option></select></div>
+<div><label>Style</label><select id="style"><option>Educational Story</option><option>Business Documentary</option><option>Motivational Story</option><option>Mystery + Education</option></select></div>
+</div>
+<button onclick="aiScript()">✨ AI Script बनाओ</button><button class="secondary" onclick="demo()">Demo Script</button>
+<div id="status" class="status">Topic डालकर शुरू करो।</div>
+</section>
 
-  <section aria-label="About Yogendra AI Editing">
-    <h2>AI Photo to Video Maker</h2>
-    <p>Create videos from photos with AI script, voice, animation and video export tools. Designed for YouTube Shorts, Instagram and other social video projects.</p>
-    <h2>Features</h2>
-    <p>AI script generation, photo-to-video workflow, animation effects, voice options and video export.</p>
-    <p>Made by Yogendra Singh • Rajasthan, India</p>
-  </section>
+<section class="card">
+<h2>2. Script</h2>
+<textarea id="script" placeholder="Original script यहाँ आएगी..."></textarea>
+<button onclick="scenes()">🎞️ Scenes बनाओ</button>
+<div id="sceneList"></div>
+</section>
 
-  <script src="app.js"></script>
-</body>
-</html>
+<section class="card">
+<h2>3. Voice + Photos</h2>
+<label>Voice</label>
+<select id="voice"><option>Hindi Male – Story</option><option>Hindi Female – Story</option><option>Hindi Male – Documentary</option><option>Hindi Female – Documentary</option><option>Hindi Male – Motivational</option><option>Hindi Female – Motivational</option></select>
+<label>अपनी Voice / Audio upload करो</label>
+<input id="audioFile" type="file" accept="audio/*">
+<label>Photos upload करो</label>
+<input id="photos" type="file" accept="image/*" multiple>
+<div id="count" class="status">0 photos</div>
+<button onclick="record()">🎙️ Voice Record</button><button class="secondary" onclick="stopRecord()">⏹️ Stop</button>
+<audio id="audio" controls style="width:100%;margin-top:10px"></audio>
+</section>
+
+<section class="card">
+<h2>4. Final Video</h2>
+<canvas id="c" width="1280" height="720" style="display:none"></canvas>
+<video id="preview" controls></video>
+<button onclick="render()">🎬 Render Video</button><button class="secondary" onclick="download()">⬇️ Export WebM</button>
+<div id="rs" class="status">Photos चुनने के बाद Render दबाओ।</div>
+</section>
+
+<section class="card">
+<h2>About</h2>
+<p class="muted">Original educational, business and storytelling videos बनाने के लिए AI-assisted workflow.</p>
+<p class="muted">Made by Yogendra Singh • Rajasthan, India</p>
+</section>
+</div>
+
+<script>
+const $=x=>document.getElementById(x);let urls=[],blob=null,rec,ch=[];
+function demo(){ $("script").value=`शीर्षक: ${$("topic").value}\n\nINTRO\nआज हम जानेंगे कि छोटी शुरुआत से एक मजबूत बिज़नेस कैसे बनाया जा सकता है।\n\nमुख्य कहानी\nएक साधारण व्यक्ति ने बड़ी पूंजी के बिना शुरुआत की। उसने लोगों की समस्या समझी, छोटा समाधान बनाया और हर दिन अपने काम में सुधार किया। धीरे-धीरे ग्राहक बढ़े और भरोसा बना।\n\nमुख्य सीख\nसफलता केवल पैसे से नहीं आती। स्पष्ट लक्ष्य, सीखने की आदत, ग्राहक की जरूरत और लगातार मेहनत बहुत महत्वपूर्ण हैं।\n\nOUTRO\nअगर आप शुरुआत करना चाहते हैं, तो आज एक छोटी समस्या चुनिए और उसका समाधान बनाने से शुरू कीजिए।`; $("status").textContent="Demo script तैयार है। अब Scenes बनाओ।"}
+async function aiScript(){
+let t=$("topic").value.trim();if(!t)return $("status").textContent="पहले Topic लिखो।";
+$("status").textContent="AI Script बन रही है...";
+try{let r=await fetch("/api/script",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({topic:t,length:+$("length").value,style:$("style").value,language:"Hindi"})});let d=await r.json();if(!r.ok)throw 0;$("script").value=d.script||"";$("status").textContent="AI Script तैयार है।"}catch(e){$("status").textContent="AI API अभी उपलब्ध नहीं है। Demo Script इस्तेमाल कर सकते हो।"}}
+function scenes(){let a=$("script").value.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean);if(!a.length)return;
+$("sceneList").innerHTML=a.map((x,i)=>`<div class="scene"><b>Scene ${i+1}</b><br>${x}</div>`).join("");}
+$("photos").onchange=e=>{$("count").textContent=e.target.files.length+" photos selected";urls=[...e.target.files].map(f=>URL.createObjectURL(f))}
+$("audioFile").onchange=e=>{if(e.target.files[0])$("audio").src=URL.createObjectURL(e.target.files[0])}
+async function record(){try{let s=await navigator.mediaDevices.getUserMedia({audio:true});ch=[];rec=new MediaRecorder(s);rec.ondataavailable=e=>ch.push(e.data);rec.onstop=()=>{$("audio").src=URL.createObjectURL(new Blob(ch,{type:"audio/webm"}));s.getTracks().forEach(t=>t.stop())};rec.start();$("rs").textContent="Recording शुरू है..."}catch(e){$("rs").textContent="Microphone permission नहीं मिली।"}}
+function stopRecord(){if(rec&&rec.state!="inactive")rec.stop()}
+async function render(){if(!urls.length)return $("rs").textContent="पहले photos upload करो।";
+let cv=$("c"),x=cv.getContext("2d"),stream=cv.captureStream(30),r=new MediaRecorder(stream),out=[];r.ondataavailable=e=>out.push(e.data);r.start();
+let duration=30,start=performance.now();await new Promise(done=>{function f(now){let sec=(now-start)/1000,i=Math.floor(sec/5)%urls.length,img=new Image();img.onload=()=>{x.fillStyle="#000";x.fillRect(0,0,1280,720);let z=Math.max(1280/img.width,720/img.height),w=img.width*z,h=img.height*z;x.drawImage(img,(1280-w)/2,(720-h)/2,w,h);x.fillStyle="rgba(0,0,0,.55)";x.fillRect(0,625,1280,95);x.fillStyle="#fff";x.font="bold 34px system-ui";x.fillText($("topic").value.slice(0,55),30,680);if(sec<duration)requestAnimationFrame(f);else done()};img.src=urls[i]}requestAnimationFrame(f)});
+r.stop();await new Promise(q=>r.onstop=q);blob=new Blob(out,{type:"video/webm"});$("preview").src=URL.createObjectURL(blob);$("rs").textContent="30 सेकंड का video preview तैयार है।"}
+function download(){if(!blob)return $("rs").textContent="पहले Render करो।";let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="yogendra-ai-video.webm";a.click()}
+demo();
+</script>
+</body></html>
