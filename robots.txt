@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://yogendra-ai-editing.vercel.app/sitemap.xml
