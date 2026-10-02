@@ -12,3 +12,9 @@
     const data = await r.json();
     if (!r.ok) return res.status(r.status).json(data);
     return res.status(200).json({result:
+       } catch (error) {
+    return res.status(500).json({
+      error: error.message || "Server error"
+    });
+  }
+  }
