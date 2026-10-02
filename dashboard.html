@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dashboard — Yogendra AI Editing</title>
+  <link rel="stylesheet" href="auth-style.css">
+</head>
+<body>
+  <main class="auth-wrap">
+    <section class="auth-card">
+      <div class="logo">🎬</div>
+      <h1>My Projects</h1>
+      <p id="userEmail" class="muted">Loading...</p>
+
+      <button id="newProject" class="btn primary" style="width:100%">＋ New Video</button>
+      <div id="projects" style="margin-top:18px"></div>
+
+      <button id="logout" class="btn secondary" style="width:100%;margin-top:18px">Logout</button>
+      <a class="back" href="index.html">← Video Maker</a>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
