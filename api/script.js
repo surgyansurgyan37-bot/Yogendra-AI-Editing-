@@ -1,4 +1,5 @@
-export default async function handler(req, res) {
+
+ function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
   try {
     const { story } = req.body || {};
@@ -10,5 +11,4 @@ export default async function handler(req, res) {
     });
     const data = await r.json();
     if (!r.ok) return res.status(r.status).json(data);
-    return res.status(200).json({result:data.output_text || data});
-  } catch(e) { return res.status(500
+    return res.status(200).json({result:
