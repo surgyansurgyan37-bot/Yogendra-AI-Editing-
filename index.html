@@ -3,68 +3,90 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Yogendra AI Editing – Long Video Maker</title>
-<meta name="description" content="Yogendra AI Editing – original educational and business long video maker with script, scenes, voice, photos and export.">
-<meta name="robots" content="index,follow">
-<link rel="canonical" href="https://yogendra-ai-editing.vercel.app/">
+<title>Yogendra AI Editing - Long Video Maker</title>
+<meta name="description" content="Yogendra AI Editing - script, scenes, voice, photos and video export.">
 <style>
-*{box-sizing:border-box}body{margin:0;background:#07101f;color:#eef4ff;font-family:system-ui,Arial,sans-serif}
-.wrap{max-width:980px;margin:auto;padding:18px}.hero{padding:22px;border-radius:22px;background:linear-gradient(135deg,#182b69,#17204b);margin-bottom:16px}
-h1{margin:0 0 8px;font-size:30px}.muted{color:#b9c5dd}.card{background:#101b2e;border:1px solid #263758;border-radius:18px;padding:18px;margin:14px 0}
-label{display:block;margin:12px 0 6px;font-weight:700}input,select,textarea{width:100%;padding:13px;border-radius:12px;border:1px solid #344665;background:#091426;color:#fff;font-size:16px}
-textarea{min-height:150px}button{border:0;border-radius:12px;padding:12px 16px;font-weight:800;font-size:15px;cursor:pointer;margin:7px 5px 0 0;background:#2f7df6;color:white}
-button.secondary{background:#263758}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.status{padding:12px;border-radius:12px;background:#0a1425;color:#bfe0ff;margin-top:10px}
-.scene{padding:13px;border:1px solid #2a3b5d;border-radius:14px;background:#0b1628;margin:8px 0}.scene b{color:#8fc1ff}
-#preview{width:100%;background:#000;border-radius:14px;min-height:180px}.pill{display:inline-block;padding:5px 9px;border-radius:999px;background:#20345c;margin:3px;font-size:12px}
-@media(max-width:650px){.row{grid-template-columns:1fr}h1{font-size:25px}}
+*{box-sizing:border-box}
+body{margin:0;background:#08111f;color:#eef4ff;font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+.wrap{max-width:980px;margin:auto;padding:18px}
+.hero,.card{background:#101d31;border:1px solid #263a58;border-radius:22px;padding:20px;margin-bottom:16px}
+.hero{background:linear-gradient(135deg,#182b49,#172044)}
+h1{margin:0 0 8px;font-size:30px}.muted{color:#aebbd0}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+label{display:block;margin:10px 0 6px;font-weight:700}
+input,select,textarea{width:100%;background:#071223;color:#fff;border:1px solid #304766;border-radius:12px;padding:13px;font-size:16px}
+textarea{min-height:170px;resize:vertical}
+button{border:0;border-radius:12px;padding:13px 17px;font-size:16px;font-weight:800;background:#2f80ed;color:#fff;margin:6px 5px 0 0;cursor:pointer}
+button.secondary{background:#273b5c}
+button:disabled{opacity:.55;cursor:not-allowed}
+.status{background:#091528;border-radius:14px;padding:13px;margin-top:12px;color:#c9d7eb}
+#photosPreview{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+#photosPreview img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px}
+#preview{width:100%;background:#000;border-radius:14px;display:block;max-height:60vh}
+.progress{height:10px;background:#071223;border-radius:20px;overflow:hidden;margin-top:12px}
+#bar{height:100%;width:0;background:#2f80ed;transition:width .1s}
+.pill{display:inline-block;background:#203553;border-radius:999px;padding:5px 9px;margin:2px;font-size:13px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}#photosPreview{grid-template-columns:repeat(2,1fr)}h1{font-size:25px}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header class="hero">
-<h1>🎬 Yogendra AI Editing – Long Video Maker</h1>
-<p class="muted">Topic → Original Script → Scenes → Voice → Photos → Subtitles → Video Export</p>
-<span class="pill">Education</span><span class="pill">Business</span><span class="pill">YouTube</span><span class="pill">16:9 / 9:16</span>
-</header>
+
+<section class="hero">
+  <h1>Yogendra AI Editing</h1>
+  <div class="muted">Long Video Maker • Script → Photos → Voice → Render → Export</div>
+  <div style="margin-top:10px">
+    <span class="pill">Educational</span><span class="pill">Business</span><span class="pill">Story</span>
+    <span class="pill">YouTube 16:9</span><span class="pill">Shorts 9:16</span>
+  </div>
+</section>
 
 <section class="card">
 <h2>1. Video Settings</h2>
-<div class="row">
-<div><label>Topic</label><input id="topic" value="₹0 से बिज़नेस शुरू करने का पूरा सफर"></div>
-<div><label>Length</label><select id="length"><option>5</option><option selected>10</option><option>15</option><option>20</option><option>24</option><option>30</option></select></div>
-<div><label>Format</label><select id="format"><option>16:9 YouTube</option><option>9:16 Shorts</option></select></div>
-<div><label>Style</label><select id="style"><option>Educational Story</option><option>Business Documentary</option><option>Motivational Story</option><option>Mystery + Education</option></select></div>
+<div class="grid">
+  <div><label>Topic</label><input id="topic" value="Five friends ki story" placeholder="अपना topic लिखें"></div>
+  <div><label>Length</label><select id="length"><option value="1">1 minute</option><option value="5" selected>5 minutes</option><option value="10">10 minutes</option><option value="20">20 minutes</option></select></div>
+  <div><label>Format</label><select id="format"><option value="16:9" selected>16:9 YouTube</option><option value="9:16">9:16 Shorts</option></select></div>
+  <div><label>Style</label><select id="style"><option>Educational Story</option><option>Business Documentary</option><option>Mystery Story</option><option>Motivational Story</option></select></div>
 </div>
-<button onclick="aiScript()">✨ AI Script बनाओ</button><button class="secondary" onclick="demo()">Demo Script</button>
-<div id="status" class="status">Topic डालकर शुरू करो।</div>
+<button onclick="makeDemoScript()">✨ Demo Script बनाओ</button>
+<button class="secondary" onclick="generateLocalScript()">📝 Local Demo Script</button>
+<button class="secondary" onclick="generateAIScript()">🤖 OpenAI AI Script बनाओ</button>
+<div id="status" class="status">Topic तैयार है। अब script बनाएं या अपनी script डालें।</div>
 </section>
 
 <section class="card">
 <h2>2. Script</h2>
-<textarea id="script" placeholder="Original script यहाँ आएगी..."></textarea>
-<button onclick="scenes()">🎞️ Scenes बनाओ</button>
-<div id="sceneList"></div>
+<textarea id="script" placeholder="अपनी कहानी/script यहाँ लिखें..."></textarea>
+<button onclick="makeScenes()">🎬 Scenes बनाओ</button>
+<div id="sceneList" class="status">अभी कोई scenes नहीं हैं।</div>
 </section>
 
 <section class="card">
 <h2>3. Voice + Photos</h2>
-<label>Voice</label>
-<select id="voice"><option>Hindi Male – Story</option><option>Hindi Female – Story</option><option>Hindi Male – Documentary</option><option>Hindi Female – Documentary</option><option>Hindi Male – Motivational</option><option>Hindi Female – Motivational</option></select>
-<label>अपनी Voice / Audio upload करो</label>
+<label>Voice audio upload करें</label>
 <input id="audioFile" type="file" accept="audio/*">
-<label>Photos upload करो</label>
+<audio id="audioPlayer" controls style="width:100%;margin-top:10px;display:none"></audio>
+
+<label>Photos upload करें — कई photos चुन सकते हैं</label>
 <input id="photos" type="file" accept="image/*" multiple>
-<div id="count" class="status">0 photos</div>
-<button onclick="record()">🎙️ Voice Record</button><button class="secondary" onclick="stopRecord()">⏹️ Stop</button>
-<audio id="audio" controls style="width:100%;margin-top:10px"></audio>
+<div id="photosPreview"></div>
+
+<div style="margin-top:8px">
+<button onclick="startRecord()">🎙️ Voice Record</button>
+<button class="secondary" onclick="stopRecord()">⏹️ Stop</button>
+</div>
+<audio id="recordedAudio" controls style="width:100%;margin-top:10px;display:none"></audio>
 </section>
 
 <section class="card">
 <h2>4. Final Video</h2>
-<canvas id="c" width="1280" height="720" style="display:none"></canvas>
-<video id="preview" controls></video>
-<button onclick="render()">🎬 Render Video</button><button class="secondary" onclick="download()">⬇️ Export WebM</button>
-<div id="rs" class="status">Photos चुनने के बाद Render दबाओ।</div>
+<canvas id="canvas" width="1280" height="720" style="display:none"></canvas>
+<video id="preview" controls playsinline></video>
+<div class="progress"><div id="bar"></div></div>
+<button id="renderBtn" onclick="renderVideo()">🎬 Render Video</button>
+<button class="secondary" id="downloadBtn" onclick="downloadVideo()" disabled>⬇️ Export WebM</button>
+<div id="renderStatus" class="status">पहले photos upload करना जरूरी नहीं है — बिना photo के भी render चलेगा।</div>
 </section>
 
 <section class="card">
@@ -75,23 +97,194 @@ button.secondary{background:#263758}.row{display:grid;grid-template-columns:1fr 
 </div>
 
 <script>
-const $=x=>document.getElementById(x);let urls=[],blob=null,rec,ch=[];
-function demo(){ $("script").value=`शीर्षक: ${$("topic").value}\n\nINTRO\nआज हम जानेंगे कि छोटी शुरुआत से एक मजबूत बिज़नेस कैसे बनाया जा सकता है।\n\nमुख्य कहानी\nएक साधारण व्यक्ति ने बड़ी पूंजी के बिना शुरुआत की। उसने लोगों की समस्या समझी, छोटा समाधान बनाया और हर दिन अपने काम में सुधार किया। धीरे-धीरे ग्राहक बढ़े और भरोसा बना।\n\nमुख्य सीख\nसफलता केवल पैसे से नहीं आती। स्पष्ट लक्ष्य, सीखने की आदत, ग्राहक की जरूरत और लगातार मेहनत बहुत महत्वपूर्ण हैं।\n\nOUTRO\nअगर आप शुरुआत करना चाहते हैं, तो आज एक छोटी समस्या चुनिए और उसका समाधान बनाने से शुरू कीजिए।`; $("status").textContent="Demo script तैयार है। अब Scenes बनाओ।"}
-async function aiScript(){
-let t=$("topic").value.trim();if(!t)return $("status").textContent="पहले Topic लिखो।";
-$("status").textContent="AI Script बन रही है...";
-try{let r=await fetch("/api/script",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({topic:t,length:+$("length").value,style:$("style").value,language:"Hindi"})});let d=await r.json();if(!r.ok)throw 0;$("script").value=d.script||"";$("status").textContent="AI Script तैयार है।"}catch(e){$("status").textContent="AI API अभी उपलब्ध नहीं है। Demo Script इस्तेमाल कर सकते हो।"}}
-function scenes(){let a=$("script").value.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean);if(!a.length)return;
-$("sceneList").innerHTML=a.map((x,i)=>`<div class="scene"><b>Scene ${i+1}</b><br>${x}</div>`).join("");}
-$("photos").onchange=e=>{$("count").textContent=e.target.files.length+" photos selected";urls=[...e.target.files].map(f=>URL.createObjectURL(f))}
-$("audioFile").onchange=e=>{if(e.target.files[0])$("audio").src=URL.createObjectURL(e.target.files[0])}
-async function record(){try{let s=await navigator.mediaDevices.getUserMedia({audio:true});ch=[];rec=new MediaRecorder(s);rec.ondataavailable=e=>ch.push(e.data);rec.onstop=()=>{$("audio").src=URL.createObjectURL(new Blob(ch,{type:"audio/webm"}));s.getTracks().forEach(t=>t.stop())};rec.start();$("rs").textContent="Recording शुरू है..."}catch(e){$("rs").textContent="Microphone permission नहीं मिली।"}}
-function stopRecord(){if(rec&&rec.state!="inactive")rec.stop()}
-async function render(){if(!urls.length)return $("rs").textContent="पहले photos upload करो।";
-let cv=$("c"),x=cv.getContext("2d"),stream=cv.captureStream(30),r=new MediaRecorder(stream),out=[];r.ondataavailable=e=>out.push(e.data);r.start();
-let duration=30,start=performance.now();await new Promise(done=>{function f(now){let sec=(now-start)/1000,i=Math.floor(sec/5)%urls.length,img=new Image();img.onload=()=>{x.fillStyle="#000";x.fillRect(0,0,1280,720);let z=Math.max(1280/img.width,720/img.height),w=img.width*z,h=img.height*z;x.drawImage(img,(1280-w)/2,(720-h)/2,w,h);x.fillStyle="rgba(0,0,0,.55)";x.fillRect(0,625,1280,95);x.fillStyle="#fff";x.font="bold 34px system-ui";x.fillText($("topic").value.slice(0,55),30,680);if(sec<duration)requestAnimationFrame(f);else done()};img.src=urls[i]}requestAnimationFrame(f)});
-r.stop();await new Promise(q=>r.onstop=q);blob=new Blob(out,{type:"video/webm"});$("preview").src=URL.createObjectURL(blob);$("rs").textContent="30 सेकंड का video preview तैयार है।"}
-function download(){if(!blob)return $("rs").textContent="पहले Render करो।";let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="yogendra-ai-video.webm";a.click()}
-demo();
+const $=id=>document.getElementById(id);
+let photoUrls=[], renderedBlob=null, recorder=null, chunks=[], recordedBlob=null;
+
+function setStatus(t){$("status").textContent=t}
+function makeDemoScript(){
+  const topic=$("topic").value.trim()||"Five friends ki story";
+  $("script").value=`${topic}
+
+एक छोटे शहर में पाँच दोस्त रहते थे। पाँचों की सोच अलग थी, लेकिन उनका लक्ष्य एक था—कुछ नया सीखना और अपनी जिंदगी में आगे बढ़ना।
+
+एक दिन उन्होंने तय किया कि वे अपनी छोटी-सी समस्या का समाधान खुद बनाएंगे। उन्होंने पहले लोगों से बात की, समस्या को समझा और छोटे स्तर पर काम शुरू किया।
+
+शुरुआत आसान नहीं थी। कई बार योजना बदली, गलतियाँ हुईं और मेहनत बेकार जाती हुई लगी। लेकिन पाँचों दोस्तों ने एक-दूसरे का साथ नहीं छोड़ा।
+
+धीरे-धीरे उन्हें अपने काम में सुधार दिखाई देने लगा। लोगों का भरोसा बढ़ा और उनके छोटे प्रयास को पहचान मिलने लगी।
+
+इस कहानी की सीख है कि बड़ी शुरुआत के लिए बड़ी पूंजी से ज्यादा जरूरी है—समस्या को समझना, लगातार सीखना और मिलकर काम करना।`;
+  setStatus("Demo script तैयार है। अब Scenes बनाएं।");
+}
+
+async function generateAIScript(){
+  const topic=$("topic").value.trim();
+  if(!topic){setStatus("पहले Topic लिखें।");return}
+  const btn=document.querySelector('button[onclick="generateAIScript()"]');
+  btn.disabled=true;
+  setStatus("OpenAI से script बनाई जा रही है...");
+  try{
+    const res=await fetch("/api/generate-script",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        topic,
+        length:$("length").value,
+        format:$("format").value,
+        style:$("style").value,
+        language:"Hindi"
+      })
+    });
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data.error||`Server error ${res.status}`);
+    if(!data.script) throw new Error("AI ने script नहीं भेजी।");
+    $("script").value=data.script;
+    setStatus("✅ OpenAI AI Script तैयार है। अब Scenes बनाएं।");
+  }catch(e){
+    console.error(e);
+    setStatus("❌ OpenAI error: "+(e.message||e)+" — Demo Script इस्तेमाल कर सकते हैं।");
+  }finally{btn.disabled=false}
+}
+
+function generateLocalScript(){
+  const topic=$("topic").value.trim()||"एक नई कहानी";
+  $("script").value=`${topic}
+
+यह कहानी पाँच दोस्तों की है, जिन्होंने एक समस्या को अवसर में बदलने का फैसला किया।
+
+पहले उन्होंने समस्या को ध्यान से समझा और लोगों से बातचीत की। इसके बाद उन्होंने एक छोटा समाधान तैयार किया और उसे आजमाया।
+
+शुरुआती परिणाम सामान्य रहे, लेकिन उन्होंने हार नहीं मानी। हर दिन उन्होंने feedback लिया और अपने काम में एक छोटा सुधार किया।
+
+कुछ समय बाद लोगों का भरोसा बढ़ा। पाँचों दोस्तों ने समझा कि सफलता केवल तेज शुरुआत से नहीं, बल्कि लगातार सुधार और टीमवर्क से बनती है।
+
+अंत में उन्होंने सीखा कि छोटा कदम भी बड़ा बदलाव ला सकता है, अगर सीखने और मेहनत करने की आदत बनी रहे।`;
+  setStatus("Demo script तैयार है।");
+}
+
+function makeScenes(){
+  const text=$("script").value.trim();
+  if(!text){setStatus("पहले script लिखें।");return}
+  const parts=text.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  const scenes=parts.slice(0,20);
+  $("sceneList").innerHTML=scenes.map((s,i)=>`<div style="margin:8px 0"><b>Scene ${i+1}</b> — ${escapeHtml(s.slice(0,180))}</div>`).join("");
+  setStatus(`${scenes.length} scenes तैयार हैं। अब photos/voice जोड़ सकते हैं।`);
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
+
+$("photos").addEventListener("change",e=>{
+  photoUrls.forEach(u=>URL.revokeObjectURL(u));
+  photoUrls=[...e.target.files].map(f=>URL.createObjectURL(f));
+  $("photosPreview").innerHTML=photoUrls.map(u=>`<img src="${u}">`).join("");
+  $("renderStatus").textContent=photoUrls.length?`${photoUrls.length} photos loaded. Render के लिए तैयार।`:"No photos selected.";
+});
+$("audioFile").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f)return;
+  $("audioPlayer").src=URL.createObjectURL(f); $("audioPlayer").style.display="block";
+});
+
+async function startRecord(){
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    chunks=[]; recorder=new MediaRecorder(stream);
+    recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+    recorder.onstop=()=>{
+      recordedBlob=new Blob(chunks,{type:recorder.mimeType||"audio/webm"});
+      $("recordedAudio").src=URL.createObjectURL(recordedBlob);
+      $("recordedAudio").style.display="block";
+      stream.getTracks().forEach(t=>t.stop());
+    };
+    recorder.start(); $("renderStatus").textContent="Recording चालू है...";
+  }catch(e){$("renderStatus").textContent="Microphone permission नहीं मिली।";}
+}
+function stopRecord(){if(recorder&&recorder.state!=="inactive")recorder.stop()}
+
+function loadImage(url){
+ return new Promise((resolve,reject)=>{
+   const img=new Image(); img.onload=()=>resolve(img); img.onerror=reject; img.src=url;
+ });
+}
+function drawCover(ctx,img,w,h){
+ const z=Math.max(w/img.width,h/img.height), iw=img.width*z, ih=img.height*z;
+ ctx.drawImage(img,(w-iw)/2,(h-ih)/2,iw,ih);
+}
+
+async function renderVideo(){
+  const btn=$("renderBtn"); btn.disabled=true; $("downloadBtn").disabled=true; renderedBlob=null;
+  try{
+    const canvas=$("canvas"), ctx=canvas.getContext("2d");
+    const vertical=$("format").value==="9:16";
+    canvas.width=vertical?720:1280; canvas.height=vertical?1280:720;
+    const w=canvas.width,h=canvas.height;
+
+    let imgs=[];
+    for(const u of photoUrls){try{imgs.push(await loadImage(u))}catch{}}
+
+    const script=$("script").value.trim();
+    const scenes=script.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+    if(!imgs.length){
+      imgs=[null];
+      $("renderStatus").textContent="Photos नहीं हैं, इसलिए text-card से render किया जा रहा है।";
+    }
+
+    const fps=30;
+    // Browser render duration is capped to 60 seconds to keep mobile rendering practical.
+    // The selected length still controls the scene timing proportionally.
+    const selectedMinutes=Number($("length").value)||5;
+    const totalSeconds=Math.min(60,Math.max(10,selectedMinutes*12));
+    const sceneCount=Math.max(1,Math.min(imgs.length,scenes.length||imgs.length));
+    const sceneSeconds=totalSeconds/sceneCount;
+
+    const stream=canvas.captureStream(fps);
+    const mime=MediaRecorder.isTypeSupported("video/webm;codecs=vp9")?"video/webm;codecs=vp9":
+               MediaRecorder.isTypeSupported("video/webm;codecs=vp8")?"video/webm;codecs=vp8":"video/webm";
+    const rec=new MediaRecorder(stream,{mimeType:mime});
+    const out=[]; rec.ondataavailable=e=>{if(e.data.size)out.push(e.data)};
+    const stopped=new Promise(resolve=>rec.onstop=resolve);
+    rec.start(200);
+
+    for(let i=0;i<sceneCount;i++){
+      const start=performance.now();
+      while(performance.now()-start<sceneSeconds*1000){
+        const elapsed=(performance.now()-start)/1000;
+        ctx.fillStyle="#07101d";ctx.fillRect(0,0,w,h);
+        if(imgs[i]){
+          drawCover(ctx,imgs[i],w,h);
+          const g=ctx.createLinearGradient(0,h*.55,0,h);g.addColorStop(0,"rgba(0,0,0,0)");g.addColorStop(1,"rgba(0,0,0,.78)");
+          ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+        }
+        const title=$("topic").value.trim()||"Yogendra AI Editing";
+        ctx.fillStyle="#fff";ctx.font=`700 ${vertical?38:42}px system-ui`;ctx.textAlign="center";
+        ctx.fillText(title.slice(0,55),w/2,h*.82);
+        ctx.font=`${vertical?25:28}px system-ui`;
+        const line=(scenes[i]||"").slice(0,85);
+        if(line)ctx.fillText(line,w/2,h*.88);
+        ctx.font="600 20px system-ui";ctx.fillStyle="rgba(255,255,255,.75)";
+        ctx.fillText(`Scene ${i+1}/${sceneCount}`,w/2,h-28);
+
+        $("bar").style.width=`${Math.min(100,((i*sceneSeconds+elapsed)/totalSeconds)*100)}%`;
+        await new Promise(r=>requestAnimationFrame(r));
+      }
+    }
+    rec.stop(); await stopped;
+    renderedBlob=new Blob(out,{type:mime});
+    $("preview").src=URL.createObjectURL(renderedBlob);
+    $("downloadBtn").disabled=false;
+    $("bar").style.width="100%";
+    $("renderStatus").textContent="✅ Render पूरा हो गया। अब Export WebM दबाएं।";
+  }catch(e){
+    console.error(e);
+    $("renderStatus").textContent="❌ Render error: "+(e.message||e);
+  }finally{btn.disabled=false}
+}
+
+function downloadVideo(){
+  if(!renderedBlob){$("renderStatus").textContent="पहले Render Video दबाएं।";return}
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(renderedBlob);
+  a.download="yogendra-ai-video.webm";
+  document.body.appendChild(a);a.click();a.remove();
+}
 </script>
-</
+</body>
+</html>
