@@ -1,9 +1,14 @@
-# Yogendra AI Editing — OpenAI setup
+# Yogendra AI Editing – OpenAI setup
 
-1. Upload `index.html`, `api/generate-script.js`, and `vercel.json` to the GitHub repository.
-2. In Vercel Project Settings → Environment Variables, add `OPENAI_API_KEY` with your OpenAI API key.
-3. Optionally add `OPENAI_MODEL` with `gpt-5.6-luna`.
-4. Redeploy the project.
-5. Open the website and press `OpenAI AI Script बनाओ`.
+## Vercel Environment Variables
+Add these variables in your Vercel project under Settings → Environment Variables:
 
-Never put the real API key inside index.html or commit it to GitHub.
+- `OPENAI_API_KEY` = your OpenAI API key
+- `OPENAI_MODEL` = `gpt-6-luna` (or another model available to your API account)
+
+Redeploy after saving the variables.
+
+## Important
+The browser Render Video button is local and does not require the OpenAI API. The AI Script button calls `/api/generate-script` and requires `OPENAI_API_KEY`.
+
+The API function uses CommonJS syntax for broad Vercel Node.js compatibility and avoids the previous `Unexpected reserved word` parsing problem.
