@@ -28,19 +28,60 @@ body:after{content:"";position:fixed;inset:0;z-index:-2;opacity:.35;background-i
 <section class="card"><h2>🔊 Voice</h2><p class="muted">MVP में phone/browser की built-in speech voice इस्तेमाल होती है; API credits की जरूरत नहीं।</p><div class="row"><select id="voiceLang"><option value="hi-IN">Hindi Voice</option><option value="en-US">English Voice</option></select><select id="rate"><option value="0.9">Normal</option><option value="1">Fast</option><option value="0.75">Slow</option></select><div></div></div><div class="actions"><button id="speak">▶️ Voice सुनें</button><button id="stopVoice" class="secondary">⏹️ Stop Voice</button></div></section>
 <section class="card"><h2>🎞️ Automatic Video</h2><div class="progress"><div id="bar" class="bar"></div></div><div id="renderStatus" class="status">पहले scenes बनाएं।</div><button id="render" class="green">🎥 Create Video</button><video id="preview" controls></video><a id="download" download="yogendra-ai-video.webm" style="display:none"><button class="secondary">📥 Export Video</button></a></section>
 </main><footer class="footer">© Yogendra AI Editing • AI Video Maker MVP</footer>
-<script>const $=id=>document.getElementById(id);let sceneData=[],photoImg=null;function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}function makeScenes(){let t=$("script").value.trim();if(!t)return;sceneData=t.split(/\n{2,}/).map(x=>x.trim()).filter(Boolean).slice(0,12).map((x,i)=>({title:`Scene ${i+1}`,text:x.slice(0,180)}));$("scenes").innerHTML=sceneData.map(s=>`<div class="scene"><b>${s.title}</b>${esc(s.text)}<div class="small">🎨 ${$("style").value} visual • ${$("ratio").value}</div></div>`).join("");$("renderStatus").textContent=`✅ ${sceneData.length} scenes तैयार हैं।`}function localScript(){let t=$("topic").value.trim()||"AI से वीडियो कैसे बनाएं";$("script").value=`🎬 Title: ${t}
-
-🔥 Hook:
-क्या आप जानते हैं कि ${t} को आसान और रोचक तरीके से समझा जा सकता है?
-
-🎙️ Introduction:
-आज की इस वीडियो में हम ${t} को step-by-step समझेंगे।
-
-📌 Main Content:
-सबसे पहले जरूरी जानकारी समझते हैं। फिर practical steps और example देखेंगे।
-
-💡 Key Takeaway:
-सही जानकारी, अच्छी कहानी और साफ presentation एक उपयोगी वीडियो बनाते हैं।
-
-👋 Outro:
-ऐसी और जानकारी के लिए जुड़े रहें।`;$("scriptStatus").textContent="✅ Local demo script तैयार है।";$("scriptStatus").className="status ok";makeScenes()}async function aiScript(){let topic=$("topic").value.trim();if(!topic){$("scriptStatus").textContent="❌ पहले Topic लिखें।";return}$("generate").disabled=true;$("scriptStatus").textContent="⏳ AI script बन रही है...";try{let r=await fetch("/api/script",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({topic,language:$("language").value,duration:$("duration").value,style:$("style").value})});let j=await r.json();if(!r.ok)throw Error(j.error||`Server error ${r.status}`);$("script").value=j.script||"";$("scriptStatus").textContent="✅ AI Script तैयार है।";$("scriptStatus").className="status ok";makeScenes()}catch(e){$("scriptStatus").textContent="⚠️ AI script नहीं बनी: "+e.message+"\n\nLocal Demo Script से workflow चला सकते हैं।";$("scriptStatus").className="status error"}finally{$("generate").disabled=false}}$("demo").onclick=localScript;$("generate").onclick=aiScript;$("scenesBtn").onclick=makeScenes;$("photo").onchange=e=>{let f=e.target.files[0];if(!f)return;let u=URL.createObjectURL(f);$("photoPreview").src=u;$("photoPreview").style.display="block";photoImg=new Image();photoImg.onload=()=>{$("photoStatus").textContent="✅ Photo video में इस्तेमाल होगी."};photoImg.src=u};$("speak").onclick=()=>{let t=$("script").value.trim();if(!t)return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t.slice(0,5000));u.lang=$("voiceLang").value;u.rate=Number($("rate").value);speechSynthesis.speak(u)};$("stopVoice").onclick=()=>speechSynthesis.cancel();$("render").onclick=async()=>{if(!sceneData.length){makeScenes();if(!sceneData.length)return}let v=$("ratio").value==="9:16",w=v?720:1280,h=v?1280:720,c=document.createElement("canvas");c.width=w;c.height=h;let x=c.getContext("2d"),stream=c.captureStream(30),mime=MediaRecorder.isTypeSupported("video/webm;codecs=vp9")?"video/webm;codecs=vp9":"video/webm",rec=new MediaRecorder(stream,{mimeType:mime}),chunks=[];rec.ondataavailable=e=>e.data.size&&chunks.push(e.data);let done=new Promise(r=>rec.onstop=r);rec.start(200);let total=Math.min(60,Math.max(10,Number($("duration").value)*12)),per=total/sceneData.length;for(let i=0;i<sceneData.length;i++){let st=performance.now();while(performance.now()-st<per*1000){x.fillStyle="#07101d";x.fillRect(0,0,w,h);if(photoImg){let s=Math.max(w/photoImg.width,h/photoImg.height),nw=photoImg.width*s,nh=photoImg.height*s;x.drawImage(photoImg,(w-nw)/2,(h-nh)/2,nw,nh)}x.fillStyle="rgba(0,0,0,.55)";x.fillRect(0,h*.55,w,h*.45);x.fillStyle="#fff";x.textAlign="center";x.font=`700 ${v?40:46}px system-ui`;x.fillText(($('topic').value.trim()||'Yogendra AI Editing').slice(0,48),w/2,h*.72);x.font=`${v?26:30}px system-ui`;x.fillText(sceneData[i].text.slice(0,75),w/2,h*.82);x.font="600 20px system-ui";x.fillText(`Scene ${i+1}/${sceneData.length}`,w/2,h-30);$("bar").style.width=Math.min(100,((i*per+(performance.now()-st)/1000)/total)*100)+"%";await new Promise(r=>requestAnimationFrame(r))}}rec.stop();await done;let blob=new Blob(chunks,{type:mime}),url=URL.createObjectURL(blob);$("preview").src=url;$("preview").style.display="block";$("download").href=url;$("download").style.display="block";$("bar").style.width="100%";$("renderStatus").textContent="✅ Video तैयार है। Export Video दबाएँ।";$("renderStatus").className="status ok"}</script></body></html>
+<script>const $=id=>document.getElementById(id);let sceneData=[],photoImg=null;function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}function makeScenes(){let t=$("script").value.trim();if(!t)return;sceneData=t.split(/\n{2,}/).map(x=>x.trim()).filter(Boolean).slice(0,12).map((x,i)=>({title:`Scene ${i+1}`,text:x.slice(0,180)}));$("scenes").innerHTML=sceneData.map(s=>`<div class="scene"><b>${s.title}</b>${esc(s.text)}<div class="small">🎨 ${$("style").value} visual • ${$("ratio").value}</div></div>`).join("");$("renderStatus").textContent=`✅ ${sceneData.length} scenes तैयार हैं।`}function localScript(){
+  const topic=$("topic").value.trim()||"AI से वीडियो कैसे बनाएं";
+  const lang=$("language").value;
+  const style=$("style").value;
+  const duration=Number($("duration").value)||1;
+  const seed=Date.now()+topic.length*97;
+  const pick=a=>a[Math.floor(Math.abs(Math.sin(seed+a.length*13))*a.length)%a.length];
+  const hooks=[
+    `क्या आपने कभी सोचा है कि ${topic} के पीछे असली कहानी क्या है?`,
+    `आज हम ${topic} को सिर्फ बताएंगे नहीं, बल्कि एक आसान कहानी के जरिए समझेंगे।`,
+    `एक सवाल से शुरुआत करते हैं: ${topic} आखिर इतना महत्वपूर्ण क्यों है?`,
+    `अगर आप ${topic} को बेहतर समझना चाहते हैं, तो यह कहानी आपके लिए है।`,
+    `बहुत लोग ${topic} के बारे में सुनते हैं, लेकिन इसकी असली तस्वीर कम लोग जानते हैं।`,
+    `कल्पना कीजिए कि आपको ${topic} को पहली बार किसी दोस्त को समझाना हो—आज हम यही करेंगे।`
+  ];
+  const intros=[
+    `इस वीडियो में हम ${topic} को शुरुआत से समझेंगे और अंत में सबसे काम की बातें एक जगह जोड़ेंगे।`,
+    `पहले इसका context समझेंगे, फिर इसके मुख्य हिस्सों को उदाहरणों के साथ देखेंगे।`,
+    `चलिए आसान भाषा में step-by-step देखते हैं कि ${topic} कैसे काम करता है और इसका असर क्या है।`,
+    `वीडियो के दौरान हम तीन चीजों पर ध्यान देंगे: कारण, प्रक्रिया और practical सीख।`
+  ];
+  const bridges=[
+    `अब आते हैं उस हिस्से पर जहाँ असली बात शुरू होती है।`,
+    `यहाँ एक छोटा उदाहरण पूरी तस्वीर साफ कर देता है।`,
+    `अब इस बात को एक real-life situation से समझते हैं।`,
+    `अगला सवाल स्वाभाविक है—इसका practical मतलब क्या है?`
+  ];
+  const endings=[
+    `तो आज की सबसे बड़ी सीख यही है कि ${topic} को समझने के लिए सही जानकारी और सही संदर्भ दोनों जरूरी हैं।`,
+    `याद रखिए, छोटी-सी सही जानकारी भी किसी बड़े फैसले को बेहतर बना सकती है।`,
+    `अगर इस विषय को ध्यान से समझा जाए, तो confusion की जगह एक clear picture बन जाती है।`,
+    `यही वजह है कि ${topic} को केवल headline की तरह नहीं, बल्कि पूरी कहानी की तरह समझना चाहिए।`
+  ];
+  const facts=[
+    `पहला point है इसकी basic समझ। बिना foundation के आगे की जानकारी अधूरी लग सकती है।`,
+    `दूसरा point है इसका practical side। किसी भी concept की असली value तब दिखती है जब उसे example पर लागू किया जाए।`,
+    `तीसरा point है सही जानकारी की जाँच। अलग-अलग claims को compare करना और reliable source देखना जरूरी है।`,
+    `चौथा point है context। एक ही बात अलग परिस्थितियों में अलग परिणाम दे सकती है।`,
+    `पाँचवाँ point है action। जानकारी तभी उपयोगी बनती है जब उससे अगला सही कदम तय किया जा सके।`
+  ];
+  let sections=[];
+  sections.push(`🎬 Title: ${topic}`);
+  sections.push(`🔥 Hook:\n${pick(hooks)}`);
+  sections.push(`🎙️ Introduction:\n${pick(intros)}`);
+  sections.push(`📌 Chapter 1 — शुरुआत:\n${facts[0]}\n\n${pick(bridges)} ${topic} को समझने के लिए सबसे पहले उसके उद्देश्य और context पर ध्यान देना चाहिए।`);
+  sections.push(`🔎 Chapter 2 — मुख्य बात:\n${facts[1]}\n\n${pick(bridges)} सोचिए कि ${topic} किसी आम व्यक्ति, creator या business के सामने आए तो उसका पहला practical सवाल क्या होगा।`);
+  sections.push(`🧠 Chapter 3 — समझने का तरीका:\n${facts[2]}\n\n${facts[3]} इसी वजह से किसी भी निष्कर्ष पर पहुँचने से पहले पूरी परिस्थिति देखना जरूरी है।`);
+  sections.push(`💡 Chapter 4 — Practical Example:\nमान लीजिए कोई व्यक्ति ${topic} से जुड़ा निर्णय लेना चाहता है। वह पहले goal तय करेगा, फिर उपलब्ध जानकारी देखेगा, options की तुलना करेगा और अंत में सबसे उचित कदम चुनेगा।`);
+  if(duration>=5) sections.push(`📚 Chapter 5 — Extra Insight:\n${facts[4]} एक अच्छी कहानी केवल जानकारी नहीं देती; वह viewer को यह भी बताती है कि उस जानकारी का इस्तेमाल कब और कैसे करना है।\n\n${pick(bridges)} यही हिस्सा ${topic} को याद रखने में सबसे ज्यादा मदद करता है।`);
+  sections.push(`✨ Key Takeaway:\n${pick(endings)}`);
+  sections.push(`👋 Outro:\nअगर आपको ${topic} पर यह आसान explanation पसंद आया, तो आगे के वीडियो में इसी विषय के दूसरे पहलुओं को भी समझ सकते हैं।`);
+  $("script").value=sections.join("\n\n");
+  $("scriptStatus").textContent=`✅ Unique local script तैयार है • ${style} • ${lang} • ${duration} मिनट`;
+  $("scriptStatus").className="status ok";
+  makeScenes();
+}
+async function aiScript(){let topic=$("topic").value.trim();if(!topic){$("scriptStatus").textContent="❌ पहले Topic लिखें।";return}$("generate").disabled=true;$("scriptStatus").textContent="⏳ AI script बन रही है...";try{let r=await fetch("/api/script",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({topic,language:$("language").value,duration:$("duration").value,style:$("style").value})});let j=await r.json();if(!r.ok)throw Error(j.error||`Server error ${r.status}`);$("script").value=j.script||"";$("scriptStatus").textContent="✅ AI Script तैयार है।";$("scriptStatus").className="status ok";makeScenes()}catch(e){$("scriptStatus").textContent="⚠️ AI script नहीं बनी: "+e.message+"\n\nLocal Demo Script से workflow चला सकते हैं।";$("scriptStatus").className="status error"}finally{$("generate").disabled=false}}$("demo").onclick=localScript;$("generate").onclick=aiScript;$("scenesBtn").onclick=makeScenes;$("photo").onchange=e=>{let f=e.target.files[0];if(!f)return;let u=URL.createObjectURL(f);$("photoPreview").src=u;$("photoPreview").style.display="block";photoImg=new Image();photoImg.onload=()=>{$("photoStatus").textContent="✅ Photo video में इस्तेमाल होगी."};photoImg.src=u};$("speak").onclick=()=>{let t=$("script").value.trim();if(!t)return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t.slice(0,5000));u.lang=$("voiceLang").value;u.rate=Number($("rate").value);speechSynthesis.speak(u)};$("stopVoice").onclick=()=>speechSynthesis.cancel();$("render").onclick=async()=>{if(!sceneData.length){makeScenes();if(!sceneData.length)return}let v=$("ratio").value==="9:16",w=v?720:1280,h=v?1280:720,c=document.createElement("canvas");c.width=w;c.height=h;let x=c.getContext("2d"),stream=c.captureStream(30),mime=MediaRecorder.isTypeSupported("video/webm;codecs=vp9")?"video/webm;codecs=vp9":"video/webm",rec=new MediaRecorder(stream,{mimeType:mime}),chunks=[];rec.ondataavailable=e=>e.data.size&&chunks.push(e.data);let done=new Promise(r=>rec.onstop=r);rec.start(200);let total=Math.min(60,Math.max(10,Number($("duration").value)*12)),per=total/sceneData.length;for(let i=0;i<sceneData.length;i++){let st=performance.now();while(performance.now()-st<per*1000){x.fillStyle="#07101d";x.fillRect(0,0,w,h);if(photoImg){let s=Math.max(w/photoImg.width,h/photoImg.height),nw=photoImg.width*s,nh=photoImg.height*s;x.drawImage(photoImg,(w-nw)/2,(h-nh)/2,nw,nh)}x.fillStyle="rgba(0,0,0,.55)";x.fillRect(0,h*.55,w,h*.45);x.fillStyle="#fff";x.textAlign="center";x.font=`700 ${v?40:46}px system-ui`;x.fillText(($('topic').value.trim()||'Yogendra AI Editing').slice(0,48),w/2,h*.72);x.font=`${v?26:30}px system-ui`;x.fillText(sceneData[i].text.slice(0,75),w/2,h*.82);x.font="600 20px system-ui";x.fillText(`Scene ${i+1}/${sceneData.length}`,w/2,h-30);$("bar").style.width=Math.min(100,((i*per+(performance.now()-st)/1000)/total)*100)+"%";await new Promise(r=>requestAnimationFrame(r))}}rec.stop();await done;let blob=new Blob(chunks,{type:mime}),url=URL.createObjectURL(blob);$("preview").src=url;$("preview").style.display="block";$("download").href=url;$("download").style.display="block";$("bar").style.width="100%";$("renderStatus").textContent="✅ Video तैयार है। Export Video दबाएँ।";$("renderStatus").className="status ok"}</script></body></html>
